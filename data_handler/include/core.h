@@ -29,7 +29,7 @@ typedef struct _drone_t {
 	navdata_t navdata;
 } drone_t;
 
-void initialize_drone(drone_t* drone);
+drone_t* initialize_drone(drone_t* drone);
 
 void close_drone(drone_t* drone);
 

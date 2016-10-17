@@ -7,7 +7,7 @@
 #include <core.h>
 #define CPDBG(fmt, ...)	printf(fmt, ##__VA_ARGS__)
 
-void initialize_drone(drone_t* drone)
+drone_t* initialize_drone(drone_t* drone)
 {
 	struct hostent *h;
 	if(drone)
@@ -45,8 +45,8 @@ void initialize_drone(drone_t* drone)
   CPDBG("\ttrim sensors\n"); 
   sprintf(drone->command, "AT*FTRIM=%d,\r",drone->sequence++);
   sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
-  
-	CPDBG("Initializing drone finished\n");
+  CPDBG("Initializing drone finished\n");
+  return drone;
 }
 
 void close_drone(drone_t* drone)

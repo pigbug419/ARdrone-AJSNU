@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   int	i, cmd;
   navdata_t navdata;
 	drone_t *drone = NULL;
-	initialize_drone(drone);
+	drone = initialize_drone(drone);
   
 	do{
 		printf("=================Command===============\n");
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		scanf("%d", &cmd);
 	//	printf("cmd is %d ##########################################\n",cmd);
 		
-		
+/*		
 		switch(cmd){
 		
 		case 0: //Landing
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 			land_drone(drone);
 			break;
 		default : system("exit");
-		}
+		}*/
 		for(i=0; i<30; i++){
 			update_navdata(drone);
 			navdata = get_navdata(drone);

@@ -1,5 +1,5 @@
 CC = gcc
-INC = -I./include
+INC = -g -I./include
 CFLAGS = $(INC)
 SRCS = src/control.c src/com.c src/core.c src/navdata.c testDrone.c
 OBJS = $(SRCS:%.c=%.o)
