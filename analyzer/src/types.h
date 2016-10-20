@@ -2,10 +2,10 @@
 #define __DRONE_TYPES_H__
 
 
-#define CAMERA_WIDTH	320
-#define CAMERA_HEIGHT 240
+#define CAMERA_WIDTH		320
+#define CAMERA_HEIGHT		240
 
-#define STEREO_KEY		8800
+#define STEREO_KEY			8800
 #define DRONE_KEY			8700
 #define SVO_KEY				8600
 
@@ -57,6 +57,8 @@ typedef struct {
 	long msgtype;
 	SVODATA svo;
 } SVO_IN;
+
+void print_cmd(DRONE_COMMAND cmd);
 
 //__DRONE_TYPES_H__
 #endif

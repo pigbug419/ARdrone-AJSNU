@@ -7,6 +7,8 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
+#include "analyzer.hpp"
+
 using namespace std;
 using namespace cv;
 
@@ -120,6 +122,10 @@ void Analyzer::Run()
 void Analyzer::Test()
 {
 	//will be implemented..
+	//Test 1. stereo vision test!
+	ReceiveStereo();
+	ProcessStereo();
+	PrintProcessed();
 }
 
 void Set_video_source(char name[])
@@ -213,14 +219,63 @@ bool Analyzer::ReceiveStereo()
 DRONE_COMMAND Analyzer::NormalMode()
 {
 	DRONE_COMMAND cmd = MOVEF;
+	ProcessStereo();
 	return cmd;
 }
 
 DRONE_COMMAND Analyzer::SwerveMode()
 {
+	DRONE_COMMAND cmd = MOVER;
+	ProcessStereo();
+	return cmd;
 }
 
 DRONE_COMMAND Analyzer::ReturnMode()
 {
+	DRONE_COMMAND cmd = MOVEL;
+	ProcessStereo();
+	return cmd;
+}
 
+void Analyzer::ProcessStereo()
+{
+	int i, j;
+	for(i = 0; i < PARR_LENGTH ; i++)
+	{
+		for(j = 0 ; j < PARR_LENGTH; j++)
+		{
+			// process processed_data[i][j]!
+			int xleftmost = (CAMERA_WIDTH*i)/PARR_LENGTH;
+			int xrightmost = (CAMERA_WIDTH*(i+1))/PARR_LENGTH;
+			int yleftmost = (CAMERA_HEIGHT*j)/PARR_LENGTH;
+			int yrightmost = (CAMERA_HEIGHT*(j+1))/PARR_LENGTH;
+			unsigned char temp = 0;
+			unsigned char maxval = 0x0;
+			int x,y;
+			for(x = xleftmost ; x<xrightmost ; x++)
+			{
+				for(y = yleftmost ; y<yrightmost ; y++)
+				{
+					// should be more specific because of the noise
+					temp = stereo_data.at<unsigned char>(x,y);
+					if(temp>maxval) maxval = temp;
+				}
+			}
+			processed_data[i][j]=temp;
+		}
+	}
+}
+
+void Analyzer::PrintProcessed()
+{
+	int i ,j;
+	for(i = 0; i < PARR_LENGTH ; i++)
+	{
+		for(j = 0 ; j < PARR_LENGTH; j++)
+		{
+			printf("[%d] ", processed_data[i][j]);
+		}
+		printf("\n");
+	}
+	
 }
