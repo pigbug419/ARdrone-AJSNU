@@ -12,7 +12,7 @@ enum STEREOTYPE{
 	MESSAGE_STREAM,
 	VIDEO_STREAM,
 	IMAGE_STREAM // not used yet
-} // for debuging!
+}; // for debuging!
 
 class Analyzer
 {
@@ -21,7 +21,7 @@ public:
 	bool Initialize(); // false - fail to set the message queues
 	void Prepare(); // takeoff & lift
 	void Run(); // run only one step...? TBD
-	void Test(); // function for testing
+	bool Test(); // function for testing
 	void Set_video_source(char name[]);
 	void PrintInfo();
 	void SendCommand(DRONE_COMMAND cmd);
@@ -48,7 +48,7 @@ private:
 	unsigned char processed_data[PARR_LENGTH][PARR_LENGTH];
 	STEREOTYPE stereo_source;
 	cv::VideoCapture* video_source;
-}
+};
 
 //__DRONE_ANALYZER_HPP__
 #endif

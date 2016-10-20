@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include "types.h"
+
 
 void print_cmd(DRONE_COMMAND cmd)
 {

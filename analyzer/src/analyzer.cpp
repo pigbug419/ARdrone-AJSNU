@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <stdio.h>
+#include <iostream>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -25,7 +26,6 @@ Analyzer::Analyzer()
 bool Analyzer::Initialize()
 {
 	bool flag = true;
-	controldata.msgtype = drone_key;
 	drone_key = msgget(drone_key, IPC_CREAT | 0666);
 	if(drone_key = -1) {
 		CPDBG("Fail to create a message queue - drone key\n");
@@ -33,9 +33,9 @@ bool Analyzer::Initialize()
 	}
 	if(stereo_source == MESSAGE_STREAM)
 	{
-		camera_key = msgget(camera_key, IPC_CREAT | 0666);
-		if(camera_key = -1) {
-			CPDBG("Fail to create a message queue - camera key\n");
+		stereo_key = msgget(stereo_key, IPC_CREAT | 0666);
+		if(stereo_key = -1) {
+			CPDBG("Fail to create a message queue - stereo key\n");
 			flag = false;
 		}
 	}
@@ -61,7 +61,7 @@ void Analyzer::Prepare()
 
 void Analyzer::PrintInfo()
 {
-	printf("State:%d\nStereoSource:%d\nCamerakey:%d\nSvokey:%d\nDronekey%d\n", state, stereo_source, camera_key, svo_key, drone_key);
+	printf("State:%d\nStereoSource:%d\nStereokey:%d\nSvokey:%d\nDronekey%d\n", state, stereo_source, stereo_key, svo_key, drone_key);
 }
 
 void Analyzer::Run()
@@ -119,19 +119,20 @@ void Analyzer::Run()
 	SendCommand(cmd);	
 }
 
-void Analyzer::Test()
+bool Analyzer::Test()
 {
 	//will be implemented..
 	//Test 1. stereo vision test!
-	ReceiveStereo();
+	if(!ReceiveStereo()) return false;
 	ProcessStereo();
 	PrintProcessed();
+	return true;
 }
 
-void Set_video_source(char name[])
+void Analyzer::Set_video_source(char name[])
 {
 	video_source = new VideoCapture(name);
-	if(!video_source->opened()){
+	if(!video_source->isOpened()){
 		CPDBG("cannot open the video file\n");
 		return;
 	}
@@ -147,7 +148,7 @@ void Analyzer::SendCommand(DRONE_COMMAND cmd) // message or be connected
 	msg.msgtype = 1; // should receive only '1' on opposite side
 	msg.cmd = cmd;
 	msg_size = sizeof(msg) - sizeof(msg.msgtype);
-	rtn = msgsnd(drone_key, msg, msg_size, 0);
+	rtn = msgsnd(drone_key, &msg, msg_size, 0);
 
 	if(rtn == -1)
 	{
@@ -183,18 +184,19 @@ bool Analyzer::ReceiveNavdata()
 		CPDBG("Fail to receive Navigation data\n");
 		return false;
 	}
-	memcpy(&nav_data, &msg.navdata, msg_size);
+	memcpy(&nav_data, &msg.nav, msg_size);
 	return true;
 }
 
 bool Analyzer::ReceiveStereo()
 {
+	int msg_size;
+	STEREO_IN msg;
+	ssize_t nbytes;
 	switch(stereo_source)
 	{
 		case MESSAGE_STREAM:
-			STEREO_IN msg;
-			ssize_t nbytes;
-			int msg_size = sizeof(msg) - sizeof(msg.msgtype);
+			msg_size = sizeof(msg) - sizeof(msg.msgtype);
 
 			nbytes = msgrcv(stereo_key, &msg, msg_size, STEREO_KEY, 0);
 			if(nbytes < 0)
@@ -205,8 +207,8 @@ bool Analyzer::ReceiveStereo()
 			stereo_data = Mat(Size(CAMERA_WIDTH, CAMERA_HEIGHT), CV_8UC1, msg.mData);
 			break;
 		case VIDEO_STREAM:
-			video_source >> stereo_data;	
-			if(img.empty()){
+			(*video_source) >> stereo_data;	
+			if(stereo_data.empty()){
 				CPDBG("Video stream finished\n");
 				return false;
 			}
