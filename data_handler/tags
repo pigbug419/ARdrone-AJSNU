@@ -1,0 +1,99 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = $(INC)$/;"	m
+CPDBG	src/control.c	3;"	d	file:
+CPDBG	src/core.c	8;"	d	file:
+DRONE_COMMAND_PORT	include/core.h	7;"	d
+DRONE_COMMAND_PORT	testDrone_navdata.c	23;"	d	file:
+DRONE_IP_ADDRESS	include/core.h	9;"	d
+DRONE_IP_ADDRESS	testDrone_navdata.c	25;"	d	file:
+DRONE_NAVDATA_PORT	include/core.h	8;"	d
+DRONE_NAVDATA_PORT	testDrone_navdata.c	24;"	d	file:
+INC	Makefile	/^INC = -I.\/include$/;"	m
+MAX_COMMAND	include/control.h	11;"	d
+MAX_COMMAND	include/core.h	11;"	d
+MAX_COMMAND	testDrone_navdata.c	27;"	d	file:
+MAX_NAVDATA	include/core.h	12;"	d
+MAX_NAVDATA	include/navdata.h	5;"	d
+MAX_NAVDATA	testDrone_navdata.c	28;"	d	file:
+OBJS	Makefile	/^OBJS = $(SRCS:%.c=%.o)$/;"	m
+SRCS	Makefile	/^SRCS = src\/control.c src\/com.c src\/core.c src\/navdata.c testDrone.c$/;"	m
+TARGET	Makefile	/^TARGET = testDrone$/;"	m
+__DRONE_COM_H__	include/com.h	3;"	d
+__DRONE_CONTROL_H__	include/control.h	2;"	d
+__DRONE_CORE_H__	include/core.h	2;"	d
+__DRONE_NAVDATA_H__	include/navdata.h	2;"	d
+_drone_t	include/core.h	/^typedef struct _drone_t {$/;"	s
+_navdata_demo_t	include/navdata.h	/^typedef struct _navdata_demo_t {$/;"	s
+_navdata_header_t	include/navdata.h	/^typedef struct _navdata_header_t {$/;"	s
+_navdata_t	include/navdata.h	/^typedef struct _navdata_t {$/;"	s
+altitude	include/navdata.h	/^  int32_t     altitude;                 \/\/ altitude in centimeters[??] $/;"	m	struct:_navdata_demo_t
+altitude	src/navdata.c	/^int32_t altitude(navdata_t navdata)$/;"	f
+battery	src/navdata.c	/^int32_t battery(navdata_t navdata)$/;"	f
+client_command_addr	include/core.h	/^	struct sockaddr_in client_command_addr; \/\/ not necessary$/;"	m	struct:_drone_t	typeref:struct:_drone_t::sockaddr_in
+client_navdata_addr	include/core.h	/^	struct sockaddr_in client_navdata_addr; \/\/ not necessary$/;"	m	struct:_drone_t	typeref:struct:_drone_t::sockaddr_in
+close_drone	src/core.c	/^void close_drone(drone_t* drone)$/;"	f
+command	include/core.h	/^	char command[MAX_COMMAND];$/;"	m	struct:_drone_t
+command	src/control.c	/^char command[MAX_COMMAND];$/;"	v
+createSocket	src/com.c	/^void createSocket(int *sd, struct sockaddr_in *droneAddr, $/;"	f
+ctrl_state	include/navdata.h	/^  uint32_t    ctrl_state;               \/\/ Flying state (landed, flying, hovering, etc.) defined in CTRL_STATES enum. $/;"	m	struct:_navdata_demo_t
+drone_command_addr	include/core.h	/^	struct sockaddr_in drone_command_addr;$/;"	m	struct:_drone_t	typeref:struct:_drone_t::sockaddr_in
+drone_hovering	src/control.c	/^void drone_hovering(int socket, int flags, int seq, struct sockaddr_in droneAddr_command){$/;"	f
+drone_land	src/control.c	/^void drone_land(int socket, int flags, int seq, struct sockaddr_in droneAddr_command){$/;"	f
+drone_lift	src/control.c	/^void drone_lift(int socket, int flags, int seq, struct sockaddr_in droneAddr_command, float _vSpeed){$/;"	f
+drone_navdata_addr	include/core.h	/^	struct sockaddr_in drone_navdata_addr;$/;"	m	struct:_drone_t	typeref:struct:_drone_t::sockaddr_in
+drone_spin	src/control.c	/^void drone_spin(int socket, int flags, int seq, struct sockaddr_in droneAddr_command, float _yawSpeed){$/;"	f
+drone_t	include/core.h	/^} drone_t;$/;"	t	typeref:struct:_drone_t
+drone_take_off	src/control.c	/^void drone_take_off(int socket, int flags, int seq, struct sockaddr_in droneAddr_command){$/;"	f
+drone_translate	src/control.c	/^void drone_translate(int socket, int flags, int seq, struct sockaddr_in droneAddr_command, float _pitch, float _roll){$/;"	f
+flags	include/core.h	/^	int flags;$/;"	m	struct:_drone_t
+float32_t	include/navdata.h	/^typedef float   float32_t;$/;"	t
+get_navdata	src/core.c	/^navdata_t get_navdata(drone_t* drone)$/;"	f
+header	include/navdata.h	/^  uint32_t    header;                   \/\/ header:55667788 $/;"	m	struct:_navdata_header_t
+hovering_drone	src/core.c	/^void hovering_drone(drone_t* drone)$/;"	f
+id	include/navdata.h	/^  uint16_t    id;                        \/\/ Navdata block ('option') identifier $/;"	m	struct:_navdata_demo_t
+initialize_drone	src/core.c	/^void initialize_drone(drone_t* drone)$/;"	f
+land_drone	src/core.c	/^void land_drone(drone_t* drone)$/;"	f
+lift_drone	src/core.c	/^void lift_drone(drone_t* drone, float _vSpeed)$/;"	f
+main	testDrone.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	testDrone_navdata.c	/^int main(int argc, char *argv[]) {$/;"	f
+navdata	include/core.h	/^	navdata_t navdata;$/;"	m	struct:_drone_t
+navdata_arr	include/core.h	/^	int navdata_arr[MAX_NAVDATA];$/;"	m	struct:_drone_t
+navdata_demo_t	include/navdata.h	/^} navdata_demo_t;$/;"	t	typeref:struct:_navdata_demo_t
+navdata_header	include/navdata.h	/^  navdata_header_t     navdata_header;  \/\/ navdata header $/;"	m	struct:_navdata_t
+navdata_header_t	include/navdata.h	/^} navdata_header_t;$/;"	t	typeref:struct:_navdata_header_t
+navdata_option	include/navdata.h	/^  navdata_demo_t       navdata_option;  \/\/ navdata option $/;"	m	struct:_navdata_t
+navdata_t	include/navdata.h	/^} navdata_t;$/;"	t	typeref:struct:_navdata_t
+num_frames	include/navdata.h	/^  uint32_t    num_frames;               \/\/!< streamed frame index  \/\/ Not used -> To integrate in video stage.$/;"	m	struct:_navdata_demo_t
+phi	include/navdata.h	/^  float32_t   phi;                      \/\/ roll  angle$/;"	m	struct:_navdata_demo_t
+phi	src/navdata.c	/^float32_t phi(navdata_t navdata)$/;"	f
+print_navdata	src/navdata.c	/^void print_navdata(navdata_t navdata)$/;"	f
+psi	include/navdata.h	/^  float32_t   psi;                      \/\/ yaw   angle$/;"	m	struct:_navdata_demo_t
+psi	src/navdata.c	/^float32_t psi(navdata_t navdata)$/;"	f
+sd_command	include/core.h	/^	int sd_command;$/;"	m	struct:_drone_t
+sd_navdata	include/core.h	/^	int sd_navdata;$/;"	m	struct:_drone_t
+sendCommand	src/com.c	/^void sendCommand(int socket, char* command, int flag, struct sockaddr_in droneAddr) {$/;"	f
+seq	include/navdata.h	/^  uint32_t    seq;                      \/\/ sequence number $/;"	m	struct:_navdata_header_t
+sequence	include/core.h	/^	int sequence;$/;"	m	struct:_drone_t
+size	include/navdata.h	/^  uint16_t    size;                      \/\/ set this to the size of this structure $/;"	m	struct:_navdata_demo_t
+socketsize	include/core.h	/^	int socketsize;$/;"	m	struct:_drone_t
+spin_drone	src/core.c	/^void spin_drone(drone_t* drone, float _yawSpeed)$/;"	f
+state	include/navdata.h	/^  uint32_t    state;                    \/\/ the state of the drone $/;"	m	struct:_navdata_header_t
+takeoff_drone	src/core.c	/^void takeoff_drone(drone_t* drone)$/;"	f
+theta	include/navdata.h	/^  float32_t   theta;                    \/\/ pitch angle in milli-degrees $/;"	m	struct:_navdata_demo_t
+theta	src/navdata.c	/^float32_t theta(navdata_t navdata)$/;"	f
+translate_drone	src/core.c	/^void translate_drone(drone_t* drone, float _pitch, float _roll)$/;"	f
+update_navdata	src/core.c	/^void update_navdata(drone_t* drone)$/;"	f
+vbat_flying_percentage	include/navdata.h	/^  uint32_t    vbat_flying_percentage;   \/\/ battery voltage filtered (mV) $/;"	m	struct:_navdata_demo_t
+vision	include/navdata.h	/^  uint32_t    vision;                   \/\/ vision flag $/;"	m	struct:_navdata_header_t
+vx	include/navdata.h	/^  float32_t   vx;                       \/\/ estimated linear velocity$/;"	m	struct:_navdata_demo_t
+vx	src/navdata.c	/^float32_t vx(navdata_t navdata)$/;"	f
+vy	include/navdata.h	/^  float32_t   vy;                       \/\/ estimated linear velocity$/;"	m	struct:_navdata_demo_t
+vy	src/navdata.c	/^float32_t vy(navdata_t navdata)$/;"	f
+vz	include/navdata.h	/^  float32_t   vz;                       \/\/ estimated linear velocity$/;"	m	struct:_navdata_demo_t
+vz	src/navdata.c	/^float32_t vz(navdata_t navdata)$/;"	f
