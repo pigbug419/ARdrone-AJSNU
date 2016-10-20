@@ -216,6 +216,7 @@ bool Analyzer::ReceiveStereo()
 		default:
 			CPDBG("Not implemented yet\n");
 	}
+	return true;
 }
 
 DRONE_COMMAND Analyzer::NormalMode()
@@ -275,9 +276,13 @@ void Analyzer::PrintProcessed()
 	{
 		for(j = 0 ; j < PARR_LENGTH; j++)
 		{
-			printf("[%d] ", processed_data[i][j]);
+			int out = processed_data[i][j];
+			printf("[%d] ", out);
 		}
 		printf("\n");
 	}
+	printf("--------------------------------\n");
+	imshow("display", stereo_data);
+	waitKey();
 	
 }
