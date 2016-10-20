@@ -1,7 +1,7 @@
 CC = g++
 INC = -I./include
 CFLAGS = -g -c `pkg-config --cflags opencv`
-LIBS = 'pkg-config --libs opencv'
+LIBS = `pkg-config --libs opencv`
 SRCS = src/analyzer.cpp src/types.c testAnalyzer.cpp
 OBJS = src/analyzer.o src/types.o testAnalyzer.o
 TARGET = testAnalyzer
@@ -9,16 +9,16 @@ TARGET = testAnalyzer
 all : $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(INC) -o $@ $(OBJS)
+	$(CC) -o $@ $(OBJS) $(INC) $(LIBS)
 
 dep :
 	gccmakedep $(INC) $(SRCS)
 
 .c.o :
-	$(CC) $(INC) $(CFLAGS) $< $@
+	$(CC) $(INC) $(CFLAGS)$ $< -o $@
 
 .cpp.o :
-	$(CC) $(INC) $(CFLAGS) $< $@
+	$(CC) $(INC) $(CFLAGS) $< -o $@ 
 
 clean :
 	rm -f $(OBJS) $(TARGET)
