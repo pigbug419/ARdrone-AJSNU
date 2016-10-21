@@ -45,7 +45,7 @@ private:
 	NAVDATA nav_data;
 	SVODATA svo_data;
 	cv::Mat stereo_data;
-	unsigned char processed_data[PARR_LENGTH][PARR_LENGTH];
+	int processed_data[PARR_LENGTH][PARR_LENGTH];
 	STEREOTYPE stereo_source;
 	cv::VideoCapture* video_source;
 };

@@ -260,11 +260,11 @@ void Analyzer::ProcessStereo()
 				for(y = yleftmost ; y<yrightmost ; y++)
 				{
 					// should be more specific because of the noise
-					temp = stereo_data.at<unsigned char>(x,y);
+					temp = *(stereo_data.ptr<unsigned char>(y,x));
 					if(temp>maxval) maxval = temp;
 				}
 			}
-			processed_data[i][j]=temp;
+			processed_data[i][j]=maxval;
 		}
 	}
 }
