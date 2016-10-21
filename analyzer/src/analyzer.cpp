@@ -121,11 +121,17 @@ void Analyzer::Run()
 
 bool Analyzer::Test()
 {
+	DRONE_COMMAND cmd = HOVERING;
 	//will be implemented..
 	//Test 1. stereo vision test!
 	if(!ReceiveStereo()) return false;
+	ReceiveNavdata();
+	printf("------------------------\nvx: %f,vy: %f,vz: %f\n altitude: %f isflying: %d\n-------------------\n", nav_data.vx, nav_data.vy, nav_data.vz, nav_data.altitude, nav_data.isflying?1:0);
 	ProcessStereo();
 	PrintProcessed();
+	cmd = NormalMode();
+	print_cmd(cmd);
+	SendCommand(cmd);
 	return true;
 }
 
@@ -219,17 +225,33 @@ bool Analyzer::ReceiveStereo()
 	return true;
 }
 
+
+
 DRONE_COMMAND Analyzer::NormalMode()
 {
 	DRONE_COMMAND cmd = MOVEF;
 	ProcessStereo();
+	if(CenterBlocked())
+	{
+		cmd = HOVERING;
+		// TODO: Initialize SVO
+		state = 1;
+	}
 	return cmd;
 }
 
 DRONE_COMMAND Analyzer::SwerveMode()
 {
-	DRONE_COMMAND cmd = MOVER;
+	DRONE_COMMAND cmd = MOVER; // SPINR?
 	ProcessStereo();
+	if(!CenterBlocked())
+	{
+		cmd = HOVERING;
+		state = 2;
+	}
+	int l = LeftDepth();
+	int r = RightDepth();
+	if(r<l) cmd = MOVEL;
 	return cmd;
 }
 
@@ -237,6 +259,11 @@ DRONE_COMMAND Analyzer::ReturnMode()
 {
 	DRONE_COMMAND cmd = MOVEL;
 	ProcessStereo();
+	if(CenterBlocked())
+	{
+		cmd = HOVERING;
+		state = 1;
+	}
 	return cmd;
 }
 
@@ -259,7 +286,7 @@ void Analyzer::ProcessStereo()
 			{
 				for(y = yleftmost ; y<yrightmost ; y++)
 				{
-					// should be more specific because of the noise
+					// should be more complex because of the noise
 					temp = *(stereo_data.ptr<unsigned char>(y,x));
 					if(temp>maxval) maxval = temp;
 				}
@@ -269,6 +296,54 @@ void Analyzer::ProcessStereo()
 	}
 }
 
+bool Analyzer::CenterBlocked()
+{
+	int mid = PARR_LENGTH/2;
+	unsigned char basis = 20;
+	int i,j;
+	int cnt = 0;
+	for(i=mid-1;i<=mid+1;i++)
+		for(j=mid-1;j<=mid+1;j++) if(processed_data[j][i] > basis) cnt++;
+	return cnt>0;
+}
+
+int Analyzer::LeftDepth()
+{
+	int mid = PARR_LENGTH/2;
+	unsigned char basis = 20;
+	int depcnt = 0;
+	int cnt = 0;
+	int i,j;
+	for(i=0;i<=mid;i++)
+	{
+		cnt = 0;
+		for(j=mid-1;j<=mid+1;j++)
+			if(processed_data[i][j] > basis) cnt++;
+		if(cnt>0) break;
+		else depcnt++;
+	}
+	return depcnt;
+}
+
+int Analyzer::RightDepth()
+{
+	int mid = PARR_LENGTH/2;
+	unsigned char basis = 20;
+	int depcnt = 0;
+	int cnt = 0;
+	int i,j;
+	for(i=PARR_LENGTH-1;i>=mid;i--)
+	{
+		cnt = 0;
+		for(j=mid-1;j<=mid+1;j++)
+			if(processed_data[i][j] > basis) cnt++;
+		if(cnt>0) break;
+		else depcnt++;
+	}
+	return depcnt;
+
+}
+
 void Analyzer::PrintProcessed()
 {
 	int i ,j;
@@ -276,7 +351,7 @@ void Analyzer::PrintProcessed()
 	{
 		for(j = 0 ; j < PARR_LENGTH; j++)
 		{
-			int out = processed_data[i][j];
+			int out = processed_data[j][i];
 			printf("[%d] ", out);
 		}
 		printf("\n");

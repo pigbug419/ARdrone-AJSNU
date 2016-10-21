@@ -22,7 +22,8 @@ enum DRONE_COMMAND {
 	MOVEL,
 	MOVEB,
 	MOVEU,
-	MOVED
+	MOVED,
+	STOP
 };
 
 
@@ -37,6 +38,7 @@ typedef struct {
 	float vx, vy, vz; // vx vy vz
 	float theta, psi, phi;
 	float altitude;
+	bool isflying;
 } NAVDATA;
 
 typedef struct {
@@ -46,7 +48,7 @@ typedef struct {
 
 typedef struct {
 	long msgtype;
-	DRONE_COMMAND cmd;
+	enum DRONE_COMMAND cmd;
 } DRONE_OUT; // for controller
 
 typedef struct {
@@ -58,7 +60,7 @@ typedef struct {
 	SVODATA svo;
 } SVO_IN;
 
-void print_cmd(DRONE_COMMAND cmd);
+void print_cmd(enum DRONE_COMMAND cmd);
 
 //__DRONE_TYPES_H__
 #endif

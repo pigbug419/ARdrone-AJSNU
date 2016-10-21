@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include "types.h"
 
-#define PARR_LENGTH 3
+#define PARR_LENGTH 5
 
 
 enum STEREOTYPE{
@@ -34,7 +34,12 @@ private:
 	DRONE_COMMAND SwerveMode();
 	DRONE_COMMAND ReturnMode();
 	
+	// subfunctions related to stereo vision
 	void ProcessStereo();
+	bool CenterBlocked();
+	int LeftDepth();
+	int RightDepth();
+
 	void PrintProcessed();
 	key_t stereo_key;
 	key_t svo_key;
@@ -45,7 +50,7 @@ private:
 	NAVDATA nav_data;
 	SVODATA svo_data;
 	cv::Mat stereo_data;
-	int processed_data[PARR_LENGTH][PARR_LENGTH];
+	unsigned char processed_data[PARR_LENGTH][PARR_LENGTH];
 	STEREOTYPE stereo_source;
 	cv::VideoCapture* video_source;
 };
