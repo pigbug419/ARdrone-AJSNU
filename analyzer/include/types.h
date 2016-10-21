@@ -37,6 +37,7 @@ typedef struct {
 	float vx, vy, vz; // vx vy vz
 	float theta, psi, phi;
 	float altitude;
+	bool isflying;
 } NAVDATA;
 
 typedef struct {

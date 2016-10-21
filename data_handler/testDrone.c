@@ -9,6 +9,8 @@
 #include <time.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
 
 #ifdef __cplusplus 
 extern "C" {
@@ -27,25 +29,27 @@ extern "C" {
 
 //int cmd;
 float speed;
+key_t drone_key;
 drone_t *drone;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *nav_send(){
-	for(;;)
+	int i=0;
+	for(;;i++)
 	{
 	//	if(cmd==8) return (NULL);
 		pthread_mutex_lock(&mutex);
 
-		update_navdata(drone);
+//		update_navdata(drone);
 
 		navdata_t navdata;
-		navdata = get_navdata(drone);
-
+//		navdata = get_navdata(drone);
+		navdata.navdata_option.altitude = i;
 
 		DRONE_IN msg;
 		int msg_size = 0;
 		int rtn;
-
+		msg.msgtype = DRONE_KEY;
 		msg.nav.vx = navdata.navdata_option.vx;
 		msg.nav.vy = navdata.navdata_option.vy;
 		msg.nav.vz = navdata.navdata_option.vz;
@@ -53,9 +57,9 @@ void *nav_send(){
 		msg.nav.psi = navdata.navdata_option.psi;
 		msg.nav.phi = navdata.navdata_option.phi;
 		msg.nav.altitude = navdata.navdata_option.altitude;
-		msg.nav.isflying = ((navdata.navdata_header.state & (1<<0))!=0);		
+		msg.nav.is_flying = ((navdata.navdata_header.state & (1<<0))!=0);		
 		msg_size = sizeof(msg) - sizeof(msg.msgtype);
-		rtn = msgsnd(DRONE_KEY, &msg, msg_size, 0);
+		rtn = msgsnd(drone_key, &msg, msg_size, 0);
 
 		if(rtn == -1)
 		{
@@ -74,7 +78,7 @@ void *control_receive(){
 		ssize_t nbytes;
 		int msg_size = sizeof(msg)-sizeof(msg.msgtype);
 
-		nbytes = msgrcv(DRONE_KEY, &msg, msg_size, 1, 0);
+		nbytes = msgrcv(drone_key, &msg, msg_size, 1, 0);
 		if(nbytes<0)
 		{
 			printf("Fail to receive Control data!!!@@@\n");
@@ -82,8 +86,9 @@ void *control_receive(){
 		}
 		enum DRONE_COMMAND cmd;
 		memcpy(&cmd, &msg.cmd, msg_size);
+		print_cmd(cmd);
 
-		switch(cmd){
+	/*	switch(cmd){
 			case TAKEOFF:
 				takeoff_drone(drone);
 				break;
@@ -113,7 +118,7 @@ void *control_receive(){
 			case MOVEU:
 				lift_drone(drone,speed);
 				break;				
-		}
+		}*/
 	}
 }
 
@@ -124,6 +129,7 @@ float time_diff(struct timeval t0, struct timeval t1)
 
 int main(int argc, char *argv[]) {
 
+	drone_key = msgget(drone_key, IPC_CREAT | 0666);
 	// declare variables
 //	int	i, cmd;
 	float speed;
@@ -131,7 +137,7 @@ int main(int argc, char *argv[]) {
 	scanf("%f", &speed);
 	//	navdata_t navdata;
 	//	drone_t *drone = NULL;
-	drone = initialize_drone(drone);
+//	drone = initialize_drone(drone);
 
 	pthread_t thread_nav, thread_control;
 	pthread_create(&thread_nav,NULL, nav_send, NULL);
