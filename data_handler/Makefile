@@ -10,7 +10,7 @@ TARGET = testDrone
 all : $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS)
+	$(CC) -o $@ $(OBJS) -lpthread -fpermissive
 
 dep :
 	gccmakedep $(INC) $(SRCS)
