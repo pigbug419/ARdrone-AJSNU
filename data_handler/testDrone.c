@@ -98,7 +98,9 @@ void *nav_send_sm(){
 		
 		DRONE_IN msg;
 		navdata_t navdata;
-		navdata.navdata_option.altitude = i;
+		update_navdata(drone);
+		navdata = get_navdata(drone);
+//		navdata.navdata_option.altitude = i;
 	
 		//make msg
 		msg.msgtype = DRONE_KEY;
@@ -182,7 +184,7 @@ void *control_receive(){
 		memcpy(&cmd, &msg.cmd, msg_size);
 		print_cmd(cmd);
 
-	/*	switch(cmd){
+		switch(cmd){
 			case TAKEOFF:
 				takeoff_drone(drone);
 				break;
@@ -212,7 +214,7 @@ void *control_receive(){
 			case MOVEU:
 				lift_drone(drone,speed);
 				break;				
-		}*/
+		}
 	}
 }
 
@@ -237,7 +239,7 @@ int main(int argc, char *argv[]) {
 	scanf("%f", &speed);
 	//	navdata_t navdata;
 	//	drone_t *drone = NULL;
-//	drone = initialize_drone(drone);
+	drone = initialize_drone(drone);
 
 	pthread_t thread_nav, thread_control;
 	pthread_create(&thread_nav, NULL, nav_send_sm, NULL);
