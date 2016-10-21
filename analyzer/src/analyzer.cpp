@@ -56,6 +56,18 @@ bool Analyzer::Initialize()
 
 void Analyzer::Prepare()
 {
+	while(1)
+	{
+		if(!ReceiveNavdata())
+		{
+			CPDBG("Fail to receive a navdata\n");
+		}
+		else
+		{
+			if(!nav_data.isflying) SendCommand(TAKEOFF);
+			else break;
+		}
+	}
 	//1. takeoff & confirm it
 	//2. lift while altitude satisfies condition
 }
@@ -122,6 +134,7 @@ void Analyzer::Run()
 
 bool Analyzer::Test()
 {
+	char ch;
 	DRONE_COMMAND cmd = HOVERING;
 	//will be implemented..
 	//Test 1. stereo vision test!
@@ -129,9 +142,17 @@ bool Analyzer::Test()
 	ReceiveNavdata();
 	printf("------------------------\nvx: %f,vy: %f,vz: %f\n altitude: %f isflying: %d\n-------------------\n", nav_data.vx, nav_data.vy, nav_data.vz, nav_data.altitude, nav_data.isflying?1:0);
 	ProcessStereo();
-	PrintProcessed();
-	cmd = NormalMode();
+	
+	if(state == 0) cmd = NormalMode();
+	else cmd = SwerveMode();
+	if(state == 2) state = 0;
 	print_cmd(cmd);
+	
+	PrintProcessed();	
+	imshow("display", stereo_data);
+	ch = waitKey();
+	if(ch == 'q') return false;
+	
 	SendCommand(cmd);
 	return true;
 }
@@ -264,6 +285,7 @@ DRONE_COMMAND Analyzer::SwerveMode()
 	}
 	int l = LeftDepth();
 	int r = RightDepth();
+	printf("Swerving... : L - %d, R - %d\n", l, r); 
 	if(r<l) cmd = MOVEL;
 	return cmd;
 }
@@ -370,7 +392,4 @@ void Analyzer::PrintProcessed()
 		printf("\n");
 	}
 	printf("--------------------------------\n");
-	imshow("display", stereo_data);
-	waitKey();
-	
 }

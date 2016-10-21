@@ -9,5 +9,6 @@ int main(int argc, char** argv)
 	analyzer.Initialize();
 	analyzer.Prepare();
 	while(analyzer.Test());
+	analyzer.SendCommand(LAND);
 	return 0;
 }
