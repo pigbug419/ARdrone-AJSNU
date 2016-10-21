@@ -12,6 +12,7 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <sys/types.h>
+#include <sys/shm.h>
 
 #ifdef __cplusplus 
 extern "C" {
@@ -74,6 +75,47 @@ float speed;
 key_t drone_key;
 drone_t *drone;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *nav_send_sm(){
+	printf("it is nav_send_sm\n");
+	int shmid = shmget((key_t)5678, sizeof(DRONE_IN), 0777 | IPC_CREAT);
+	if(shmid == -1){
+		printf("error in initialize  shared memory!!@@@@\n");
+		return (NULL);
+	}
+
+	int i=0;
+
+	DRONE_IN *shmsg;
+	if((shmsg = (DRONE_IN*)shmat(shmid, NULL,0))==(DRONE_IN*)-1){
+		printf("shmat failed!\n");
+		return (NULL);
+	}
+
+	for(;;i++)
+	{
+		if(i>100000) i=0;
+		
+		DRONE_IN msg;
+		navdata_t navdata;
+		navdata.navdata_option.altitude = i;
+	
+		//make msg
+		msg.msgtype = DRONE_KEY;
+		msg.nav.vx = navdata.navdata_option.vx;
+		msg.nav.vy = navdata.navdata_option.vy;
+		msg.nav.vz = navdata.navdata_option.vz;
+		msg.nav.theta = navdata.navdata_option.theta;
+		msg.nav.psi = navdata.navdata_option.psi;
+		msg.nav.phi = navdata.navdata_option.phi;
+		msg.nav.altitude = navdata.navdata_option.altitude;
+		msg.nav.is_flying = ((navdata.navdata_header.state & (1<<0))!=0);
+
+		int msg_size = sizeof(msg);
+		memcpy(shmsg, &msg, msg_size);	
+	}
+
+}
 
 void *nav_send(){
 	printf("it is nav_send\n");
@@ -198,10 +240,10 @@ int main(int argc, char *argv[]) {
 //	drone = initialize_drone(drone);
 
 	pthread_t thread_nav, thread_control;
-//	pthread_create(&thread_nav, NULL, nav_send, NULL);
+	pthread_create(&thread_nav, NULL, nav_send_sm, NULL);
 	pthread_create(&thread_control, NULL, control_receive, NULL);
 
-//	pthread_join(thread_nav, NULL);
+	pthread_join(thread_nav, NULL);
 	pthread_join(thread_control, NULL);
 
 

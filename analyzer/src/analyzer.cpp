@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
+#include <sys/shm.h>
 
 #include "analyzer.hpp"
 
@@ -180,18 +181,29 @@ bool Analyzer::ReceiveSVO()
 
 bool Analyzer::ReceiveNavdata()
 {
-	DRONE_IN msg;
+	DRONE_IN *msg;
+	int shmid;
 	ssize_t nbytes;
-	int msg_size = sizeof(msg) - sizeof(msg.msgtype);
+//	int msg_size = sizeof(msg);
+	int msg_size = sizeof(NAVDATA);
 
+	if((shmid = shmget((key_t) 5678, sizeof(DRONE_IN), 0777 | IPC_CREAT))<0){
+		printf("Cannot Create shm!!!@@@\n");
+		return false;
+	}
 
-	nbytes = msgrcv(drone_key, &msg, msg_size, DRONE_KEY, 0);
+	if((msg = (DRONE_IN*)shmat(shmid, NULL, 0)) == (DRONE_IN *) -1){
+		printf("Failed attach memory\n");
+		return false;
+	}
+
+/*	nbytes = msgrcv(drone_key, &msg, msg_size, DRONE_KEY, 0);
 	if(nbytes < 0)
 	{
 		CPDBG("Fail to receive Navigation data\n");
 		return false;
-	}
-	memcpy(&nav_data, &msg.nav, msg_size);
+	}*/
+	memcpy(&nav_data, &(msg->nav), msg_size);
 	return true;
 }
 
