@@ -27,14 +27,14 @@ bool Analyzer::Initialize()
 {
 	bool flag = true;
 	drone_key = msgget(drone_key, IPC_CREAT | 0666);
-	if(drone_key = -1) {
+	if(drone_key == -1) {
 		CPDBG("Fail to create a message queue - drone key\n");
 		flag = false;
 	}
 	if(stereo_source == MESSAGE_STREAM)
 	{
 		stereo_key = msgget(stereo_key, IPC_CREAT | 0666);
-		if(stereo_key = -1) {
+		if(stereo_key == -1) {
 			CPDBG("Fail to create a message queue - stereo key\n");
 			flag = false;
 		}
@@ -45,7 +45,7 @@ bool Analyzer::Initialize()
 	}
 
 	svo_key = msgget(svo_key, IPC_CREAT | 0666);
-	if(svo_key = -1) {
+	if(svo_key == -1) {
 		CPDBG("Fail to create a message queue - svo key\n");
 		flag = false;
 	}
@@ -183,6 +183,7 @@ bool Analyzer::ReceiveNavdata()
 	DRONE_IN msg;
 	ssize_t nbytes;
 	int msg_size = sizeof(msg) - sizeof(msg.msgtype);
+
 
 	nbytes = msgrcv(drone_key, &msg, msg_size, DRONE_KEY, 0);
 	if(nbytes < 0)

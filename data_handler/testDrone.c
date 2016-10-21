@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus 
 extern "C" {
@@ -27,6 +28,47 @@ extern "C" {
 }
 #endif
 
+void print_cmd(enum DRONE_COMMAND cmd)
+{
+	switch(cmd)
+	{
+		case TAKEOFF:
+			printf("Take Off\n");
+			break;
+		case LAND:
+			printf("Land\n");
+			break;
+		case HOVERING:
+			printf("Hovering\n");
+			break;
+		case SPINR:
+			printf("Spin right\n");
+			break;
+		case SPINL:
+			printf("Spin left\n");
+			break;
+		case MOVEF:
+			printf("Move forward\n");
+			break;
+		case MOVER:
+			printf("Move to rightside\n");
+			break;
+		case MOVEL:
+			printf("Move to leftside\n");
+			break;
+		case MOVEB:
+			printf("Move backward\n");
+			break;
+		case MOVEU:
+			printf("Go higher (lift)\n");
+			break;
+		case MOVED:
+			printf("Go lower\n");
+			break;
+		default:
+			printf("Unknown command %d\n", cmd);
+	}
+}
 //int cmd;
 float speed;
 key_t drone_key;
@@ -34,11 +76,16 @@ drone_t *drone;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *nav_send(){
+	printf("it is nav_send\n");
 	int i=0;
+	
+//	key_t drone_key2 = msgget(DRONE_KEY, IPC_CREAT | 0666);
+//	printf("drone_key = %d\n", drone_key2);
+
 	for(;;i++)
 	{
 	//	if(cmd==8) return (NULL);
-		pthread_mutex_lock(&mutex);
+	//	pthread_mutex_lock(&mutex);
 
 //		update_navdata(drone);
 
@@ -57,28 +104,33 @@ void *nav_send(){
 		msg.nav.psi = navdata.navdata_option.psi;
 		msg.nav.phi = navdata.navdata_option.phi;
 		msg.nav.altitude = navdata.navdata_option.altitude;
-		msg.nav.is_flying = ((navdata.navdata_header.state & (1<<0))!=0);		
+		msg.nav.is_flying = ((navdata.navdata_header.state & (1<<0))!=0);
+
 		msg_size = sizeof(msg) - sizeof(msg.msgtype);
 		rtn = msgsnd(drone_key, &msg, msg_size, 0);
-
+		printf("i : %d\n", i);
+	
 		if(rtn == -1)
 		{
 			printf("Fail to send Navdata!!!@@@\n");
 			return (NULL);
 		}
+		//sleep(1);
 
-		pthread_mutex_unlock(&mutex);
+	//	pthread_mutex_unlock(&mutex);
 	}
 }
 
 void *control_receive(){
 	for(;;)
 	{
+	//	printf("it is control_receive\n");
 		DRONE_OUT msg;
 		ssize_t nbytes;
 		int msg_size = sizeof(msg)-sizeof(msg.msgtype);
-
+	//	printf("2\n");
 		nbytes = msgrcv(drone_key, &msg, msg_size, 1, 0);
+	//	printf("after receive\n");
 		if(nbytes<0)
 		{
 			printf("Fail to receive Control data!!!@@@\n");
@@ -129,7 +181,13 @@ float time_diff(struct timeval t0, struct timeval t1)
 
 int main(int argc, char *argv[]) {
 
+	drone_key = DRONE_KEY;
 	drone_key = msgget(drone_key, IPC_CREAT | 0666);
+	if(drone_key ==-1)
+	{
+		printf("Fail to create a message que - drone_key\n");
+		return 0;
+	}
 	// declare variables
 //	int	i, cmd;
 	float speed;
@@ -140,10 +198,10 @@ int main(int argc, char *argv[]) {
 //	drone = initialize_drone(drone);
 
 	pthread_t thread_nav, thread_control;
-	pthread_create(&thread_nav,NULL, nav_send, NULL);
+//	pthread_create(&thread_nav, NULL, nav_send, NULL);
 	pthread_create(&thread_control, NULL, control_receive, NULL);
 
-	pthread_join(thread_nav, NULL);
+//	pthread_join(thread_nav, NULL);
 	pthread_join(thread_control, NULL);
 
 
@@ -223,7 +281,8 @@ int main(int argc, char *argv[]) {
 	// close socket
 	pthread_exit(NULL);
 	close_drone(drone);
-
+	msgctl(drone_key , IPC_RMID, 0);
+//	msgctl(drone_key2, IPC_RMID, 0);
 	return 0;
 
 }

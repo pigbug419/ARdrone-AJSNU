@@ -1,7 +1,7 @@
-CC = gcc
+CC = g++
 INC = -g -I./include
-CFLAGS = $(INC)
-SRCS = src/control.c src/com.c src/core.c src/navdata.c src/types.c testDrone.c
+CFLAGS = -fpermissive $(INC)
+SRCS = src/control.c src/com.c src/core.c src/navdata.c testDrone.c
 OBJS = $(SRCS:%.c=%.o)
 TARGET = testDrone
 
