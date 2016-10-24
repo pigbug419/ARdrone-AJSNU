@@ -20,7 +20,8 @@ public:
 	Analyzer();
 	bool Initialize(); // false - fail to set the message queues
 	void Prepare(); // takeoff & lift
-	void Run(); // run only one step...? TBD
+	bool Run(); // run only one step...? TBD
+	bool Run2(); // run scenario 2
 	bool Test(); // function for testing
 	void Set_video_source(char name[]);
 	void PrintInfo();
@@ -29,12 +30,20 @@ private:
 	bool ReceiveSVO();
 	bool ReceiveStereo();
 	bool ReceiveNavdata(); // failed = false
-	
+
+	// Scenario 1
 	DRONE_COMMAND NormalMode();
 	DRONE_COMMAND SwerveMode();
+	DRONE_COMMAND GopastMode();
 	DRONE_COMMAND ReturnMode();
 	
+	// Scenario without SVO
+	DRONE_COMMAND next_swerve;
+	DRONE_COMMAND SwitchSwerve();
+
 	// subfunctions related to stereo vision
+	
+	void ProcessNoise();
 	void ProcessStereo();
 	bool CenterBlocked();
 	int LeftDepth();
@@ -45,11 +54,12 @@ private:
 	key_t svo_key;
 	key_t drone_key;
 	
-	int state; // 0 : go straight , 1 : swerve, 2 : retrun to origin route
-	// 0 -> 1 <-> 2 -> 0 (FSM), other transition is not permitted
+	int state; // 0 : go straight , 1 : swerve, 2: go past ,3 : retrun to origin route
+	// 0 -> 1 <-> 2 -> 3 -> 0 (FSM), other transition is not permitted
 	NAVDATA nav_data;
 	SVODATA svo_data;
 	cv::Mat stereo_data;
+	cv::Mat previous_data;
 	unsigned char processed_data[PARR_LENGTH][PARR_LENGTH];
 	STEREOTYPE stereo_source;
 	cv::VideoCapture* video_source;

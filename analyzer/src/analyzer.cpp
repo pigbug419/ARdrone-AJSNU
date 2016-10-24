@@ -8,6 +8,7 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <sys/shm.h>
+#include <unistd.h>
 
 #include "analyzer.hpp"
 
@@ -22,6 +23,7 @@ Analyzer::Analyzer()
 	stereo_key = STEREO_KEY;
 	svo_key = SVO_KEY;
 	drone_key = DRONE_KEY;
+	next_swerve = MOVER;
 }
 
 bool Analyzer::Initialize()
@@ -67,6 +69,7 @@ void Analyzer::Prepare()
 			if(!nav_data.isflying) SendCommand(TAKEOFF);
 			else break;
 		}
+		usleep(50000);
 	}
 	//1. takeoff & confirm it
 	//2. lift while altitude satisfies condition
@@ -77,7 +80,8 @@ void Analyzer::PrintInfo()
 	printf("State:%d\nStereoSource:%d\nStereokey:%d\nSvokey:%d\nDronekey%d\n", state, stereo_source, stereo_key, svo_key, drone_key);
 }
 
-void Analyzer::Run()
+
+bool Analyzer::Run()
 {
 	// run only one step! (for signal handling.. & scalability)
 	DRONE_COMMAND cmd = HOVERING;
@@ -86,50 +90,96 @@ void Analyzer::Run()
 		case 0:
 			if(!ReceiveStereo()){
 				CPDBG("Fail to get a stereo info");
-				break;
+				return false;
 			}
 			if(!ReceiveNavdata()){
 				CPDBG("Fail to get a navdata");
-				break;
+				return false;
 			}
-			NormalMode();
+			cmd = NormalMode();
 			break;
 		case 1:
 			if(!ReceiveStereo()){
 				CPDBG("Fail to get a stereo info");
-				break;
+				return false;
 			}
 			if(!ReceiveNavdata()){
 				CPDBG("Fail to get a navdata");
-				break;
+				return false;
 			}
 			if(!ReceiveSVO()){
 				CPDBG("Fail to get a svo info");
-				break;
+				return false;
 			}
-			SwerveMode();
+			cmd = SwerveMode();
 			break;
 		case 2:
 			if(!ReceiveStereo()){
 				CPDBG("Fail to get a stereo info");
-				break;
+				return false;
 			}
 			if(!ReceiveNavdata()){
 				CPDBG("Fail to get a navdata");
-				break;
+				return false;
 			}
 			if(!ReceiveSVO()){
 				CPDBG("Fail to get a svo info");
-				break;
+				return false;
 			}
-			ReturnMode();
+			cmd = GopastMode();
+			break;
+
+		case 3:
+			if(!ReceiveStereo()){
+				CPDBG("Fail to get a stereo info");
+				return false;
+			}
+			if(!ReceiveNavdata()){
+				CPDBG("Fail to get a navdata");
+				return false;
+			}
+			if(!ReceiveSVO()){
+				CPDBG("Fail to get a svo info");
+				return false;
+			}
+			cmd = ReturnMode();
 			break;
 		default:
 			CPDBG("shit error!\n");
-			cmd = LAND;
+			cmd = STOP;
 			break;
 	}
 	SendCommand(cmd);	
+	return true;
+}
+
+bool Analyzer::Run2()
+{
+	char ch;
+	DRONE_COMMAND cmd = HOVERING;
+	if(!ReceiveStereo()){
+		CPDBG("Fail to get a stereo info");
+		return false;
+	}
+	if(!ReceiveNavdata()){
+		CPDBG("Fail to get a navdata");
+		return false;
+	}
+	ReceiveNavdata();
+	ProcessStereo();
+	if(state == 0) cmd = NormalMode();
+	else cmd = SwitchSwerve();
+	// Debuging
+	PrintInfo();
+	print_cmd(cmd);
+	PrintProcessed();	
+	imshow("display", stereo_data);
+	ch = waitKey();
+	if(ch == 'q') return false;
+	//Debuging end
+
+	//SendCommand(cmd);
+	return true;
 }
 
 bool Analyzer::Test()
@@ -141,7 +191,6 @@ bool Analyzer::Test()
 	if(!ReceiveStereo()) return false;
 	ReceiveNavdata();
 	printf("------------------------\nvx: %f,vy: %f,vz: %f\n altitude: %f isflying: %d\n-------------------\n", nav_data.vx, nav_data.vy, nav_data.vz, nav_data.altitude, nav_data.isflying?1:0);
-	ProcessStereo();
 	
 	if(state == 0) cmd = NormalMode();
 	else cmd = SwerveMode();
@@ -283,10 +332,20 @@ DRONE_COMMAND Analyzer::SwerveMode()
 		cmd = HOVERING;
 		state = 2;
 	}
-	int l = LeftDepth();
-	int r = RightDepth();
-	printf("Swerving... : L - %d, R - %d\n", l, r); 
-	if(r<l) cmd = MOVEL;
+	else
+	{
+		int l = LeftDepth();
+		int r = RightDepth();
+		printf("Swerving... : L - %d, R - %d\n", l, r); 
+		if(r<l) cmd = MOVEL;
+	}
+	return cmd;
+}
+
+DRONE_COMMAND Analyzer::GopastMode()
+{
+	DRONE_COMMAND cmd = MOVEF;
+	state = 3; // TODO
 	return cmd;
 }
 
@@ -300,6 +359,25 @@ DRONE_COMMAND Analyzer::ReturnMode()
 		state = 1;
 	}
 	return cmd;
+}
+
+DRONE_COMMAND Analyzer::SwitchSwerve()
+{
+	DRONE_COMMAND cmd = MOVER; // SPINR?
+	ProcessStereo();
+	if(!CenterBlocked())
+	{
+		cmd = HOVERING;
+		state = 0;
+		next_swerve = (next_swerve == MOVER) ? MOVEL : MOVER;
+	}
+	else cmd = next_swerve;
+	return cmd;
+}
+
+void Analyzer::ProcessNoise()
+{
+	//TODO
 }
 
 void Analyzer::ProcessStereo()
@@ -334,12 +412,20 @@ void Analyzer::ProcessStereo()
 bool Analyzer::CenterBlocked()
 {
 	int mid = PARR_LENGTH/2;
-	unsigned char basis = 20;
+	int bias = 0;
+	if(state == 1) bias = 5;
+	else bias = 0;
+	unsigned char basis = 15;
 	int i,j;
 	int cnt = 0;
 	for(i=mid-1;i<=mid+1;i++)
-		for(j=mid-1;j<=mid+1;j++) if(processed_data[j][i] > basis) cnt++;
-	return cnt>0;
+		for(j=mid-1;j<=mid+1;j++)
+			if(processed_data[j][i] > basis-bias){
+				if(i==mid) cnt+=1;
+				if(j==mid) cnt+=1;
+				cnt++;
+			}
+	return cnt>=4;
 }
 
 int Analyzer::LeftDepth()
@@ -367,7 +453,7 @@ int Analyzer::RightDepth()
 	int depcnt = 0;
 	int cnt = 0;
 	int i,j;
-	for(i=PARR_LENGTH-1;i>=mid;i--)
+	for(i=PARR_LENGTH-1;mid<=i;i--)
 	{
 		cnt = 0;
 		for(j=mid-1;j<=mid+1;j++)
