@@ -185,6 +185,77 @@ bool Analyzer::Run()
 
 bool Analyzer::Test()
 {
+	DRONE_COMMAND cmd = HOVERING;
+	mode_changed = false;
+	if(diff_timeval(stop_timer) > runtime * 1000)
+	{
+		CPDBG("10sec... Landing\n");
+		//Land();
+		return false;
+	}
+	if(!ReceiveStereo()){
+		CPDBG("Fail to get a stereo info.. Landing\n");
+		//Land();
+		return false;
+	}
+	if(!ReceiveNavdata()){
+		CPDBG("Fail to get a navdata... Landing");
+		//Land();
+		return false;
+	}
+
+	switch(state)
+	{
+		case NORMAL:
+			cmd = NormalMode();
+			break;
+		case SIDLE:
+			cmd = SidleMode();
+			break;
+		case PASSBY:
+			cmd = PassbyMode();
+			break;
+		case LOOKASIDE:
+			cmd = LookasideMode();
+			break;
+		case HEADSTRAIGHT:
+			cmd = HeadMode();
+			break;
+		case RETURN:
+			cmd = ReturnMode();
+			break;
+		default:
+			CPDBG("shit error!\n");
+			cmd = STOP;
+			break;
+	}
+	if(mode_changed || 0.9*COMMAND_INTERVAL < diff_timeval(cmd_timer))
+	{
+		if(mode_changed == true)
+		{
+			CPDBG("state is changed, its state is %d now\n", state);
+		}
+		if(state == SIDLE)
+		{
+			if(cmd == MOVEL) move_cnt--;
+			if(cmd == MOVER) move_cnt++;
+		}
+		else if(state == RETURN)
+		{
+			if(cmd == MOVEL) move_cnt--;
+			if(cmd == MOVER) move_cnt++;
+		}
+		//SendCommand(cmd);
+		PrintInfo();
+		PrintProcessed();
+		CPDBG("Command : ");
+		print_cmd(cmd);
+		imshow("stereo",stereo_data);
+		char ch = waitKey();
+		if(ch == 'q') return false;
+		init_timeval(&cmd_timer);
+	}
+	return true;
 }
 
 void Analyzer::Set_video_source(char name[])
