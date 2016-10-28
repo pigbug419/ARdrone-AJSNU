@@ -36,7 +36,7 @@ public:
 	bool Test(); // function for testing
 	void Set_video_source(char name[]);
 	void Set_realtest(bool b){realtest = b;}
-	void Set_runttime(int time){runtime = time;}
+	void Set_runtime(int time){runtime = time;}
 	void PrintInfo();
 	void Land();
 private:

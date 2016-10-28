@@ -58,7 +58,10 @@ bool Analyzer::Initialize()
 		flag = false;
 	}
 	*/
+	init_timeval(&stop_timer);
+	init_timeval(&cmd_timer);
 	CPDBG("Initialization finished\n");
+	
 	return flag;
 }
 
@@ -237,7 +240,7 @@ bool Analyzer::Test()
 		{
 			CPDBG("state is changed, its state is %d now\n", state);
 		}
-		CPDBG("Diff: %f msec\n", diff_timeval(cmd_timer));
+		CPDBG("Diff: %f msec, from beginning: %f msec\n", diff_timeval(cmd_timer), diff_timeval(stop_timer));
 		if(state == SIDLE)
 		{
 			if(cmd == MOVEL) move_cnt--;
@@ -248,6 +251,11 @@ bool Analyzer::Test()
 			if(cmd == MOVEL) move_cnt--;
 			if(cmd == MOVER) move_cnt++;
 		}
+		if(state == PASSBY)
+		{
+			CPDBG("lookaside_timer: %f\n", diff_timeval(lookaside_timer));
+		}
+		
 		PrintInfo();
 		PrintProcessed();
 		CPDBG("Command : ");
