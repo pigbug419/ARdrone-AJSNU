@@ -15,10 +15,6 @@
 #include <sys/shm.h>
 #include <unistd.h> // for sleep
 
-#ifdef __cplusplus 
-extern "C" {
-#endif
-
 #include <navdata.h>
 #include <com.h>
 #include <control.h>
@@ -27,9 +23,6 @@ extern "C" {
 #include <time_diff.h>
 	//#include "control.c"
 
-#ifdef __cplusplus 
-}
-#endif
 
 /*void print_cmd(enum DRONE_COMMAND cmd)
   {

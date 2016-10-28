@@ -1,7 +1,7 @@
-CC = gcc
-INC = -g -I./include
-CFLAGS = $(INC)
-SRCS = src/control.c src/com.c src/core.c src/navdata.c testDrone.c
+CC = g++
+INC = -I./include
+CFLAGS = -g $(INC) -fpermissive
+SRCS = src/control.c src/com.c src/core.c src/navdata.c src/types.c testDrone.c
 OBJS = $(SRCS:%.c=%.o)
 TARGET = testDrone
 
@@ -10,7 +10,7 @@ TARGET = testDrone
 all : $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS) -lpthread
+	$(CC) -o $@ $(OBJS) -lpthread $(CFLAGS)
 
 dep :
 	gccmakedep $(INC) $(SRCS)

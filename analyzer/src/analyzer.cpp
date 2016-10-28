@@ -19,11 +19,15 @@ Analyzer::Analyzer()
 {
 	stereo_source = MESSAGE_STREAM;
 	video_source = NULL;
-	state = 0;
+	state = NORMAL;
 	stereo_key = STEREO_KEY;
-	svo_key = SVO_KEY;
 	drone_key = DRONE_KEY;
-	next_swerve = MOVER;
+	sidle_cmd = MOVER;
+	runtime = 10;
+	sequences = 0;
+	init_psi = 0;
+	spin_cnt = 0;
+	move_cnt = 0;
 }
 
 bool Analyzer::Initialize()
@@ -46,18 +50,20 @@ bool Analyzer::Initialize()
 	{
 
 	}
-
+	/*
 	svo_key = msgget(svo_key, IPC_CREAT | 0666);
 	if(svo_key == -1) {
 		CPDBG("Fail to create a message queue - svo key\n");
 		flag = false;
 	}
+	*/
 	CPDBG("Initialization finished\n");
 	return flag;
 }
 
 void Analyzer::Prepare()
 {
+	//1. takeoff & confirm it
 	while(1)
 	{
 		if(!ReceiveNavdata())
@@ -69,79 +75,89 @@ void Analyzer::Prepare()
 			if(!nav_data.isflying) SendCommand(TAKEOFF);
 			else break;
 		}
-		usleep(50000);
+		usleep(COMMAND_INTERVAL);
 	}
-	//1. takeoff & confirm it
 	//2. lift while altitude satisfies condition
+	while(1)
+	{
+		if(!ReceiveNavdata())
+		{
+			CPDBG("Fail to receive a navdata\n");
+		}
+		else
+		{
+			if(nav_data.altitude < 1400) SendCommand(MOVEU); // lift while altitude > 1.4m
+			else break;
+		}
+		usleep(COMMAND_INTERVAL);
+	}
+	init_timeval(&stop_timer);
+	init_timeval(&cmd_timer);
+	CPDBG("Preparing finished\n");
 }
 
 void Analyzer::PrintInfo()
 {
-	printf("State:%d\nStereoSource:%d\nStereokey:%d\nSvokey:%d\nDronekey%d\n", state, stereo_source, stereo_key, svo_key, drone_key);
+	printf("State:%d\nStereoSource:%d\nsequences:%d\n", state, stereo_source, sequences);
 }
 
+void Analyzer::Land()
+{
+	//landing & confirm it
+	while(1)
+	{
+		if(!ReceiveNavdata())
+		{
+			CPDBG("Fail to receive a navdata\n");
+		}
+		else
+		{
+			if(nav_data.isflying) SendCommand(LAND);
+			else break;
+		}
+		usleep(COMMAND_INTERVAL);
+	}
+}
 
 bool Analyzer::Run()
 {
 	// run only one step! (for signal handling.. & scalability)
 	DRONE_COMMAND cmd = HOVERING;
+	mode_changed = false;
+	if(diff_timeval(stop_timer) > runtime * 1000)
+	{
+		Land();
+		return false;
+	}
+	if(!ReceiveStereo()){
+		CPDBG("Fail to get a stereo info");
+		Land();
+		return false;
+	}
+	if(!ReceiveNavdata()){
+		CPDBG("Fail to get a navdata");
+		Land();
+		return false;
+	}
+
 	switch(state)
 	{
-		case 0:
-			if(!ReceiveStereo()){
-				CPDBG("Fail to get a stereo info");
-				return false;
-			}
-			if(!ReceiveNavdata()){
-				CPDBG("Fail to get a navdata");
-				return false;
-			}
+		case NORMAL:
 			cmd = NormalMode();
 			break;
-		case 1:
-			if(!ReceiveStereo()){
-				CPDBG("Fail to get a stereo info");
-				return false;
-			}
-			if(!ReceiveNavdata()){
-				CPDBG("Fail to get a navdata");
-				return false;
-			}
-			if(!ReceiveSVO()){
-				CPDBG("Fail to get a svo info");
-				return false;
-			}
-			cmd = SwerveMode();
+		case SIDLE:
+			cmd = SidleMode();
 			break;
-		case 2:
-			if(!ReceiveStereo()){
-				CPDBG("Fail to get a stereo info");
-				return false;
-			}
-			if(!ReceiveNavdata()){
-				CPDBG("Fail to get a navdata");
-				return false;
-			}
-			if(!ReceiveSVO()){
-				CPDBG("Fail to get a svo info");
-				return false;
-			}
-			cmd = GopastMode();
+		case PASSBY:
+			cmd = PassbyMode();
 			break;
-
-		case 3:
-			if(!ReceiveStereo()){
-				CPDBG("Fail to get a stereo info");
-				return false;
-			}
-			if(!ReceiveNavdata()){
-				CPDBG("Fail to get a navdata");
-				return false;
-			}
-			if(!ReceiveSVO()){
-				CPDBG("Fail to get a svo info");
-				return false;
-			}
+		case LOOKASIDE:
+			cmd = LookasideMode();
+			break;
+		case HEADSTRAIGHT:
+			cmd = HeadMode();
+			break;
+		case RETURN:
 			cmd = ReturnMode();
 			break;
 		default:
@@ -149,61 +165,26 @@ bool Analyzer::Run()
 			cmd = STOP;
 			break;
 	}
-	SendCommand(cmd);	
-	return true;
-}
-
-bool Analyzer::Run2()
-{
-	char ch;
-	DRONE_COMMAND cmd = HOVERING;
-	if(!ReceiveStereo()){
-		CPDBG("Fail to get a stereo info");
-		return false;
+	if(mode_changed || 0.9*COMMAND_INTERVAL < diff_timeval(cmd_timer))
+	{
+		if(state == SIDLE)
+		{
+			if(cmd == MOVEL) move_cnt--;
+			if(cmd == MOVER) move_cnt++;
+		}
+		else if(state == RETURN)
+		{
+			if(cmd == MOVEL) move_cnt--;
+			if(cmd == MOVER) move_cnt++;
+		}
+		SendCommand(cmd);
+		init_timeval(&cmd_timer);
 	}
-	if(!ReceiveNavdata()){
-		CPDBG("Fail to get a navdata");
-		return false;
-	}
-	ReceiveNavdata();
-	ProcessStereo();
-	if(state == 0) cmd = NormalMode();
-	else cmd = SwitchSwerve();
-	// Debuging
-	PrintInfo();
-	print_cmd(cmd);
-	PrintProcessed();	
-	imshow("display", stereo_data);
-	ch = waitKey();
-	if(ch == 'q') return false;
-	//Debuging end
-
-	//SendCommand(cmd);
 	return true;
 }
 
 bool Analyzer::Test()
 {
-	char ch;
-	DRONE_COMMAND cmd = HOVERING;
-	//will be implemented..
-	//Test 1. stereo vision test!
-	if(!ReceiveStereo()) return false;
-	ReceiveNavdata();
-	printf("------------------------\nvx: %f,vy: %f,vz: %f\n altitude: %f isflying: %d\n-------------------\n", nav_data.vx, nav_data.vy, nav_data.vz, nav_data.altitude, nav_data.isflying?1:0);
-	
-	if(state == 0) cmd = NormalMode();
-	else cmd = SwerveMode();
-	if(state == 2) state = 0;
-	print_cmd(cmd);
-	
-	PrintProcessed();	
-	imshow("display", stereo_data);
-	ch = waitKey();
-	if(ch == 'q') return false;
-	
-	SendCommand(cmd);
-	return true;
 }
 
 void Analyzer::Set_video_source(char name[])
@@ -233,6 +214,7 @@ void Analyzer::SendCommand(DRONE_COMMAND cmd) // message or be connected
 	}
 }
 
+/*
 bool Analyzer::ReceiveSVO()
 {
 	SVO_IN msg;
@@ -248,6 +230,7 @@ bool Analyzer::ReceiveSVO()
 	memcpy(&svo_data, &msg.svo, msg_size);
 	return true;
 }
+*/
 
 bool Analyzer::ReceiveNavdata()
 {
@@ -305,79 +288,195 @@ bool Analyzer::ReceiveStereo()
 		default:
 			CPDBG("Not implemented yet\n");
 	}
+	if(sequences != 0)	memcpy(previous_data, processed_data, sizeof(processed_data));
+	
+	ProcessStereo();
+	if(sequences != 0) ProcessNoise();
+
+	sequences++;
 	return true;
 }
-
 
 
 DRONE_COMMAND Analyzer::NormalMode()
 {
 	DRONE_COMMAND cmd = MOVEF;
-	ProcessStereo();
 	if(CenterBlocked())
 	{
 		cmd = HOVERING;
-		// TODO: Initialize SVO
-		state = 1;
+		SetSidle();
 	}
 	return cmd;
 }
 
-DRONE_COMMAND Analyzer::SwerveMode()
+DRONE_COMMAND Analyzer::SidleMode()
 {
 	DRONE_COMMAND cmd = MOVER; // SPINR?
-	ProcessStereo();
 	if(!CenterBlocked())
 	{
 		cmd = HOVERING;
-		state = 2;
+		state = PASSBY;
+		mode_changed = true;
+		init_timeval(&lookaside_timer);
 	}
-	else
-	{
-		int l = LeftDepth();
-		int r = RightDepth();
-		printf("Swerving... : L - %d, R - %d\n", l, r); 
-		if(r<l) cmd = MOVEL;
+	else{
+		cmd = sidle_cmd;
 	}
 	return cmd;
 }
 
-DRONE_COMMAND Analyzer::GopastMode()
+void Analyzer::SetSidle()
+{
+	int l = LeftDepth();
+	int r = RightDepth();
+	init_psi = nav_data.psi;
+	mode_changed = true;
+	state = SIDLE;
+	passed = false;
+	if(state == PASSBY) return;
+	if(l > r) sidle_cmd = MOVEL;
+	else{
+		if(r > l) sidle_cmd = MOVER;
+		else{
+			if (sidle_cmd == MOVER) sidle_cmd = MOVEL;
+			else sidle_cmd = MOVER;
+		}
+	}
+}
+
+DRONE_COMMAND Analyzer::PassbyMode()
 {
 	DRONE_COMMAND cmd = MOVEF;
-	state = 3; // TODO
+	if(CenterBlocked())
+	{
+		cmd = HOVERING;
+		SetSidle();
+	}
+	if(20 * COMMAND_INTERVAL < diff_timeval(lookaside_timer))
+	{
+		cmd = HOVERING;
+		mode_changed = true;
+		state = LOOKASIDE;
+	}
 	return cmd;
+}
+
+float Analyzer::DeltaPsi()
+{
+	float delta = nav_data.psi - init_psi;
+	if(delta > 180000) return delta - 360000;
+	if(delta < -180000) return delta + 360000;
+	return delta;
+}
+
+DRONE_COMMAND Analyzer::LookasideMode()
+{
+	if(DeltaPsi() > 90000 || DeltaPsi() < -90000)
+	{
+		passed = true;
+		mode_changed = true;
+		state = HEADSTRAIGHT;
+		return SPINR;
+	}
+	if(CenterBlocked())
+	{
+		mode_changed = true;
+		state = HEADSTRAIGHT;
+		return HOVERING;
+	}
+	if(sidle_cmd == MOVEL) return SPINR;
+	else return SPINL;
+}
+
+DRONE_COMMAND Analyzer::HeadMode()
+{
+	float delPsi = DeltaPsi();
+	if(delPsi < 5000 && delPsi  > -5000)
+	{
+		mode_changed = true;
+		if(passed) state = RETURN;
+		else{
+			state = PASSBY;
+			init_timeval(&lookaside_timer);
+		}
+		return HOVERING;
+	}
+	if(delPsi < 0) return SPINL;
+	else return SPINR;
 }
 
 DRONE_COMMAND Analyzer::ReturnMode()
 {
-	DRONE_COMMAND cmd = MOVEL;
-	ProcessStereo();
+	DRONE_COMMAND cmd;
 	if(CenterBlocked())
 	{
 		cmd = HOVERING;
-		state = 1;
+		SetSidle();
+	}
+	else
+	{
+		if(move_cnt == 0)
+		{
+			mode_changed = true;
+			cmd = HOVERING;
+			state = NORMAL;
+		}
+		else
+		{
+			if(move_cnt > 0) cmd = MOVEL;
+			else cmd = MOVER;
+		}
 	}
 	return cmd;
 }
 
-DRONE_COMMAND Analyzer::SwitchSwerve()
-{
-	DRONE_COMMAND cmd = MOVER; // SPINR?
-	ProcessStereo();
-	if(!CenterBlocked())
-	{
-		cmd = HOVERING;
-		state = 0;
-		next_swerve = (next_swerve == MOVER) ? MOVEL : MOVER;
-	}
-	else cmd = next_swerve;
-	return cmd;
-}
 
 void Analyzer::ProcessNoise()
 {
-	//TODO
+	//TODO: simple filtering
+	
+	//Process when previous data is "cv::Mat"
+	/*
+	int i, j;
+	int delta;
+	unsigned char *src;
+	unsigned char *prev;
+	for(i = 0; i< CAMERA_WIDTH; i++)
+		for(j = 0 ; j < CAMERA_HEIGHT; j++)
+		{
+			src = stereo_data.ptr<unsigned char>(j,i);
+			prev = previous_data.ptr<unsigned char>(j,i);
+			delta = src - prev;
+			// Cannot use this information.....
+		}
+	*/
+	int i, j;
+	int x, y;
+	int minx, miny;
+	int maxx, maxy;
+	int mid = PARR_LENGTH/2;
+	if(PARR_LENGTH<=4) return; 
+	for(i=mid-1;i<=mid+1;i++)
+		for(j=mid-1;j<=mid+1;j++)
+		{
+			int cnt = 0;
+			int mindelta = 255;
+			minx = i-1;
+			miny = j-1;
+			maxx = i+2;
+			maxy = j+2;
+			for(x=minx;x<maxx;x++)
+				for(y=miny;y<maxy;y++)
+				{
+					int delta = processed_data[i][j] - previous_data[x][y];
+					if((double)delta/(processed_data[i][j]+100) < 0.3) cnt++;
+					else mindelta = mindelta < delta? mindelta:delta;
+				}
+			if(cnt == 0)
+			{
+				processed_data[i][j]-=mindelta;
+			}
+		}
 }
 
 void Analyzer::ProcessStereo()
@@ -413,9 +512,9 @@ bool Analyzer::CenterBlocked()
 {
 	int mid = PARR_LENGTH/2;
 	int bias = 0;
-	if(state == 1) bias = 5;
-	else bias = 0;
-	unsigned char basis = 15;
+	if(state == SIDLE) bias = 15;
+	if(state == LOOKASIDE) bias = 20;
+	unsigned char basis = 50;
 	int i,j;
 	int cnt = 0;
 	for(i=mid-1;i<=mid+1;i++)

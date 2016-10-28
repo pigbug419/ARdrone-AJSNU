@@ -48,8 +48,8 @@ float32_t vy(navdata_t navdata);
 float32_t vz(navdata_t navdata);
 
 float32_t theta(navdata_t navdata);
-float32_t psi(navdata_t navdata);
 float32_t phi(navdata_t navdata);
+float32_t psi(navdata_t navdata);
 
 int32_t altitude(navdata_t navdata);
 int32_t battery(navdata_t navdata); // battery percentage
