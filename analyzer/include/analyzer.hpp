@@ -8,7 +8,7 @@
 
 #define PARR_LENGTH 5
 // T = 100ms
-#define COMMAND_INTERVAL 100*1000
+#define COMMAND_INTERVAL 100
 #define LOOKASIDE_INTERVAL 20
 
 enum DRONESTATE{
@@ -35,6 +35,7 @@ public:
 	bool Run(); // run only one step...? TBD
 	bool Test(); // function for testing
 	void Set_video_source(char name[]);
+	void Set_realtest(bool b){realtest = b;}
 	void Set_runttime(int time){runtime = time;}
 	void PrintInfo();
 	void Land();
@@ -63,7 +64,7 @@ private:
 //	key_t svo_key;
 	key_t stereo_key;
 	key_t drone_key;
-	
+	bool realtest;
 	// NORMAL -> SIDLE -> PASSBY -> LOOKASIDE <-> HEADSTRAIGHT -> RETURN (FSM), other transition is not permitted
 //	SVODATA svo_data;
 	DRONESTATE state;

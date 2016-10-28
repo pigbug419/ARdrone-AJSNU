@@ -23,6 +23,7 @@ Analyzer::Analyzer()
 	stereo_key = STEREO_KEY;
 	drone_key = DRONE_KEY;
 	sidle_cmd = MOVER;
+	realtest = false;
 	runtime = 10;
 	sequences = 0;
 	init_psi = 0;
@@ -75,7 +76,7 @@ void Analyzer::Prepare()
 			if(!nav_data.isflying) SendCommand(TAKEOFF);
 			else break;
 		}
-		usleep(COMMAND_INTERVAL);
+		usleep(COMMAND_INTERVAL*1000);
 	}
 	//2. lift while altitude satisfies condition
 	while(1)
@@ -89,7 +90,7 @@ void Analyzer::Prepare()
 			if(nav_data.altitude < 1400) SendCommand(MOVEU); // lift while altitude > 1.4m
 			else break;
 		}
-		usleep(COMMAND_INTERVAL);
+		usleep(COMMAND_INTERVAL*1000);
 	}
 	init_timeval(&stop_timer);
 	init_timeval(&cmd_timer);
@@ -99,6 +100,7 @@ void Analyzer::Prepare()
 void Analyzer::PrintInfo()
 {
 	printf("State:%d\nStereoSource:%d\nsequences:%d\n", state, stereo_source, sequences);
+	printf("Navdata-altitude:%d, psi: %f\n", nav_data.altitude, nav_data.psi);
 }
 
 void Analyzer::Land()
@@ -115,7 +117,7 @@ void Analyzer::Land()
 			if(nav_data.isflying) SendCommand(LAND);
 			else break;
 		}
-		usleep(COMMAND_INTERVAL);
+		usleep(COMMAND_INTERVAL*1000);
 	}
 }
 
@@ -190,17 +192,17 @@ bool Analyzer::Test()
 	if(diff_timeval(stop_timer) > runtime * 1000)
 	{
 		CPDBG("10sec... Landing\n");
-		//Land();
+		if(realtest) Land();
 		return false;
 	}
 	if(!ReceiveStereo()){
 		CPDBG("Fail to get a stereo info.. Landing\n");
-		//Land();
+		if(realtest) Land();
 		return false;
 	}
 	if(!ReceiveNavdata()){
 		CPDBG("Fail to get a navdata... Landing");
-		//Land();
+		if(realtest) Land();
 		return false;
 	}
 
@@ -235,6 +237,7 @@ bool Analyzer::Test()
 		{
 			CPDBG("state is changed, its state is %d now\n", state);
 		}
+		CPDBG("Diff: %f msec\n", diff_timeval(cmd_timer));
 		if(state == SIDLE)
 		{
 			if(cmd == MOVEL) move_cnt--;
@@ -245,7 +248,6 @@ bool Analyzer::Test()
 			if(cmd == MOVEL) move_cnt--;
 			if(cmd == MOVER) move_cnt++;
 		}
-		//SendCommand(cmd);
 		PrintInfo();
 		PrintProcessed();
 		CPDBG("Command : ");
@@ -253,6 +255,7 @@ bool Analyzer::Test()
 		imshow("stereo",stereo_data);
 		char ch = waitKey();
 		if(ch == 'q') return false;
+		if(realtest) SendCommand(cmd);
 		init_timeval(&cmd_timer);
 	}
 	return true;
@@ -350,6 +353,7 @@ bool Analyzer::ReceiveStereo()
 			stereo_data = Mat(Size(CAMERA_WIDTH, CAMERA_HEIGHT), CV_8UC1, msg.mData);
 			break;
 		case VIDEO_STREAM:
+			usleep(1000*COMMAND_INTERVAL/3);
 			(*video_source) >> stereo_data;	
 			if(stereo_data.empty()){
 				CPDBG("Video stream finished\n");
