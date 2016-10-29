@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	analyzer.Set_runtime(300);
 	if(argc>2) analyzer.Set_realtest(true);
 	analyzer.Initialize();
-//	analyzer.Prepare();
+	if(argc>2) analyzer.Prepare();
 	while(analyzer.Test());
 	return 0;
 }

@@ -76,7 +76,13 @@ void Analyzer::Prepare()
 		}
 		else
 		{
-			if(!nav_data.isflying) SendCommand(TAKEOFF);
+			if(!nav_data.isflying){
+				if(realtest){
+					CPDBG("send takeoff.... enter key\n");
+					getchar();
+				}
+				SendCommand(TAKEOFF);
+			}
 			else break;
 		}
 		usleep(COMMAND_INTERVAL*1000);
@@ -90,7 +96,13 @@ void Analyzer::Prepare()
 		}
 		else
 		{
-			if(nav_data.altitude < 1400) SendCommand(MOVEU); // lift while altitude > 1.4m
+			if(nav_data.altitude < 1000){
+				if(realtest){
+					CPDBG("now altitude: %d... lift.... enter key\n", nav_data.altitude);
+					getchar();
+				}
+				SendCommand(MOVEU); // lift while altitude > 1.0m
+			}
 			else break;
 		}
 		usleep(COMMAND_INTERVAL*1000);
@@ -234,7 +246,7 @@ bool Analyzer::Test()
 			cmd = STOP;
 			break;
 	}
-	if(mode_changed || 0.9*COMMAND_INTERVAL < diff_timeval(cmd_timer))
+	if(mode_changed || 5*COMMAND_INTERVAL < diff_timeval(cmd_timer))
 	{
 		if(mode_changed == true)
 		{
@@ -262,7 +274,10 @@ bool Analyzer::Test()
 		print_cmd(cmd);
 		imshow("stereo",stereo_data);
 		char ch = waitKey();
-		if(ch == 'q') return false;
+		if(ch == 'q'){
+			Land();
+			return false;
+		}
 		if(realtest) SendCommand(cmd);
 		init_timeval(&cmd_timer);
 	}

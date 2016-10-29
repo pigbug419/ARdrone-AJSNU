@@ -79,7 +79,7 @@ void update_navdata(drone_t* drone)
 		printf("drone is not initialized yet!\n");
 		return;
 	}
-	CPDBG("send AT*COMWDG\n");
+//	CPDBG("send AT*COMWDG\n");
 	sprintf(drone->command, "AT*COMWDG=%d\r",drone->sequence++);
 	sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
 			
@@ -89,7 +89,7 @@ void update_navdata(drone_t* drone)
 	//receive data 
 	memset(drone->navdata_arr, '\0', sizeof(drone->navdata_arr)); 
 	navdata_size = recvfrom(drone->sd_navdata, drone->navdata_arr, sizeof(drone->navdata_arr), 0, (struct sockaddr *)&drone->drone_navdata_addr, &drone->socketsize);
-	CPDBG("received navdata %d bytes\n",navdata_size);
+//	CPDBG("received navdata %d bytes\n",navdata_size);
 	
 	// printf("decode navdata_struct %d bytes\n",sizeof(navdata_struct));
 	memcpy(&drone->navdata, drone->navdata_arr, sizeof(drone->navdata));
