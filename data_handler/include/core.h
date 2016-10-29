@@ -39,6 +39,9 @@ navdata_t get_navdata(drone_t* drone);
 
 void update_navdata(drone_t* drone);
 
+
+void update_navdata_for_test(drone_t* drone);
+
 //control
 
 void takeoff_drone(drone_t* drone);

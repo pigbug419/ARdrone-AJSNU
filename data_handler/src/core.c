@@ -79,9 +79,31 @@ void update_navdata(drone_t* drone)
 		printf("drone is not initialized yet!\n");
 		return;
 	}
-//	CPDBG("send AT*COMWDG\n");
-//	sprintf(drone->command, "AT*COMWDG=%d\r",drone->sequence++);
-//	sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
+	// tickle drone's port: drone send one packet of navdata in navdata_demo mode 
+	sendCommand(drone->sd_navdata, "\x01\x00", drone->flags, drone->drone_navdata_addr);
+	
+	//receive data 
+	memset(drone->navdata_arr, '\0', sizeof(drone->navdata_arr)); 
+	navdata_size = recvfrom(drone->sd_navdata, drone->navdata_arr, sizeof(drone->navdata_arr), 0, (struct sockaddr *)&drone->drone_navdata_addr, &drone->socketsize);
+	memcpy(&drone->navdata, drone->navdata_arr, sizeof(drone->navdata));
+
+  // reset emergency if it's in emergency mode
+  if ((drone->navdata.navdata_header.state & (1 << 31))!=0) {
+    sprintf(drone->command, "AT*REF=%d,290717952\r",drone->sequence++);
+    sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
+  }
+}
+
+void update_navdata_for_test(drone_t* drone)
+{
+	int navdata_size;
+	if(!drone){
+		printf("drone is not initialized yet!\n");
+		return;
+	}
+	CPDBG("send AT*COMWDG\n");
+	sprintf(drone->command, "AT*COMWDG=%d\r",drone->sequence++);
+	sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
 			
 	// tickle drone's port: drone send one packet of navdata in navdata_demo mode 
 	sendCommand(drone->sd_navdata, "\x01\x00", drone->flags, drone->drone_navdata_addr);
@@ -89,9 +111,6 @@ void update_navdata(drone_t* drone)
 	//receive data 
 	memset(drone->navdata_arr, '\0', sizeof(drone->navdata_arr)); 
 	navdata_size = recvfrom(drone->sd_navdata, drone->navdata_arr, sizeof(drone->navdata_arr), 0, (struct sockaddr *)&drone->drone_navdata_addr, &drone->socketsize);
-//	CPDBG("received navdata %d bytes\n",navdata_size);
-	
-	// printf("decode navdata_struct %d bytes\n",sizeof(navdata_struct));
 	memcpy(&drone->navdata, drone->navdata_arr, sizeof(drone->navdata));
 
   // reset emergency if it's in emergency mode
