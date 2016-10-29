@@ -474,7 +474,7 @@ DRONE_COMMAND Analyzer::LookasideMode()
 		passed = true;
 		mode_changed = true;
 		state = HEADSTRAIGHT;
-		return SPINR;
+		return HOVERING;
 	}
 	if(CenterBlocked())
 	{
