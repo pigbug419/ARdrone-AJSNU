@@ -246,7 +246,7 @@ bool Analyzer::Test()
 			cmd = STOP;
 			break;
 	}
-	if(mode_changed || 5*COMMAND_INTERVAL < diff_timeval(cmd_timer))
+	if(mode_changed || 0.95*COMMAND_INTERVAL < diff_timeval(cmd_timer))
 	{
 		if(mode_changed == true)
 		{
@@ -499,8 +499,8 @@ DRONE_COMMAND Analyzer::HeadMode()
 		}
 		return HOVERING;
 	}
-	if(delPsi < 0) return SPINL;
-	else return SPINR;
+	if(delPsi < 0) return SPINR;
+	else return SPINL;
 }
 
 DRONE_COMMAND Analyzer::ReturnMode()

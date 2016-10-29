@@ -80,8 +80,8 @@ void update_navdata(drone_t* drone)
 		return;
 	}
 //	CPDBG("send AT*COMWDG\n");
-	sprintf(drone->command, "AT*COMWDG=%d\r",drone->sequence++);
-	sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
+//	sprintf(drone->command, "AT*COMWDG=%d\r",drone->sequence++);
+//	sendCommand(drone->sd_command, drone->command, drone->flags, drone->drone_command_addr);
 			
 	// tickle drone's port: drone send one packet of navdata in navdata_demo mode 
 	sendCommand(drone->sd_navdata, "\x01\x00", drone->flags, drone->drone_navdata_addr);
