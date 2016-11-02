@@ -16,7 +16,8 @@ using namespace std;
 
 typedef struct {
     long msgtype;
-    unsigned char mData[CAMERA_WIDTH * CAMERA_HEIGHT];
+    int width, height;
+    unsigned char mData[CAMERA_WIDTH*CAMERA_HEIGHT];
 } MSG_BUF;
 
 
@@ -41,8 +42,10 @@ int main()
         }
         else
         {
-            printf("receive\n");
-            disp8 = Mat(Size(CAMERA_WIDTH, CAMERA_HEIGHT), CV_8UC1, mbuf.mData);
+            printf("msg width %d   msg height %d\n", mbuf.width, mbuf.height);
+            
+            disp8 = Mat(Size(mbuf.width, mbuf.height), CV_8UC1, mbuf.mData);
+
             imshow("receive data", disp8);
             char ch = (char)waitKey(10);
             if(ch == 'q')
