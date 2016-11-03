@@ -25,39 +25,40 @@ clean :
 # DO NOT DELETE
 analyzer.o: src/analyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/stdio.h /usr/include/features.h \
- /usr/include/x86_64-linux-gnu/sys/cdefs.h \
- /usr/include/x86_64-linux-gnu/bits/wordsize.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/arm-linux-gnueabihf/sys/cdefs.h \
+ /usr/include/arm-linux-gnueabihf/bits/wordsize.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs-hard.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stddef.h \
+ /usr/include/arm-linux-gnueabihf/bits/types.h \
+ /usr/include/arm-linux-gnueabihf/bits/typesizes.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/stdlib.h \
- /usr/include/x86_64-linux-gnu/bits/waitflags.h \
- /usr/include/x86_64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
- /usr/include/x86_64-linux-gnu/bits/endian.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap-16.h /usr/include/xlocale.h \
- /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/time.h \
- /usr/include/x86_64-linux-gnu/sys/select.h \
- /usr/include/x86_64-linux-gnu/bits/select.h \
- /usr/include/x86_64-linux-gnu/bits/sigset.h \
- /usr/include/x86_64-linux-gnu/bits/time.h \
- /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
- /usr/include/c++/4.8/iostream \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdarg.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdio_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/sys_errlist.h \
+ /usr/include/stdlib.h /usr/include/arm-linux-gnueabihf/bits/waitflags.h \
+ /usr/include/arm-linux-gnueabihf/bits/waitstatus.h /usr/include/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap-16.h \
+ /usr/include/xlocale.h /usr/include/arm-linux-gnueabihf/sys/types.h \
+ /usr/include/time.h /usr/include/arm-linux-gnueabihf/sys/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/sigset.h \
+ /usr/include/arm-linux-gnueabihf/bits/time.h \
+ /usr/include/arm-linux-gnueabihf/sys/sysmacros.h \
+ /usr/include/arm-linux-gnueabihf/bits/pthreadtypes.h \
+ /usr/include/alloca.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdlib-float.h \
+ /usr/include/string.h /usr/include/c++/4.8/iostream \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++config.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/os_defines.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/cpu_defines.h \
  /usr/include/c++/4.8/ostream /usr/include/c++/4.8/ios \
  /usr/include/c++/4.8/iosfwd /usr/include/c++/4.8/bits/stringfwd.h \
  /usr/include/c++/4.8/bits/memoryfwd.h \
  /usr/include/c++/4.8/bits/postypes.h /usr/include/c++/4.8/cwchar \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/arm-linux-gnueabihf/bits/wchar.h \
  /usr/include/c++/4.8/exception \
  /usr/include/c++/4.8/bits/atomic_lockfree_defines.h \
  /usr/include/c++/4.8/bits/char_traits.h \
@@ -74,21 +75,22 @@ analyzer.o: src/analyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/debug/debug.h \
  /usr/include/c++/4.8/bits/stl_iterator.h \
  /usr/include/c++/4.8/bits/localefwd.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++locale.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++locale.h \
  /usr/include/c++/4.8/clocale /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/4.8/cctype \
- /usr/include/ctype.h /usr/include/c++/4.8/bits/ios_base.h \
+ /usr/include/arm-linux-gnueabihf/bits/locale.h \
+ /usr/include/c++/4.8/cctype /usr/include/ctype.h \
+ /usr/include/c++/4.8/bits/ios_base.h \
  /usr/include/c++/4.8/ext/atomicity.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr-default.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/gthr.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/gthr-default.h \
  /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/x86_64-linux-gnu/bits/sched.h \
- /usr/include/x86_64-linux-gnu/bits/timex.h \
- /usr/include/x86_64-linux-gnu/bits/setjmp.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/atomic_word.h \
+ /usr/include/arm-linux-gnueabihf/bits/sched.h \
+ /usr/include/arm-linux-gnueabihf/bits/timex.h \
+ /usr/include/arm-linux-gnueabihf/bits/setjmp.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/atomic_word.h \
  /usr/include/c++/4.8/bits/locale_classes.h /usr/include/c++/4.8/string \
  /usr/include/c++/4.8/bits/allocator.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++allocator.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++allocator.h \
  /usr/include/c++/4.8/ext/new_allocator.h /usr/include/c++/4.8/new \
  /usr/include/c++/4.8/bits/ostream_insert.h \
  /usr/include/c++/4.8/bits/cxxabi_forced.h \
@@ -102,47 +104,44 @@ analyzer.o: src/analyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/basic_ios.h \
  /usr/include/c++/4.8/bits/locale_facets.h /usr/include/c++/4.8/cwctype \
  /usr/include/wctype.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_base.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/ctype_base.h \
  /usr/include/c++/4.8/bits/streambuf_iterator.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_inline.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/ctype_inline.h \
  /usr/include/c++/4.8/bits/locale_facets.tcc \
  /usr/include/c++/4.8/bits/basic_ios.tcc \
  /usr/include/c++/4.8/bits/ostream.tcc /usr/include/c++/4.8/istream \
  /usr/include/c++/4.8/bits/istream.tcc \
- /usr/include/x86_64-linux-gnu/sys/ipc.h \
- /usr/include/x86_64-linux-gnu/bits/ipctypes.h \
- /usr/include/x86_64-linux-gnu/bits/ipc.h \
- /usr/include/x86_64-linux-gnu/sys/msg.h \
- /usr/include/x86_64-linux-gnu/bits/msq.h \
- /usr/include/x86_64-linux-gnu/sys/shm.h \
- /usr/include/x86_64-linux-gnu/bits/shm.h /usr/include/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
- /usr/include/x86_64-linux-gnu/bits/environments.h \
- /usr/include/x86_64-linux-gnu/bits/confname.h /usr/include/getopt.h \
- include/analyzer.hpp /usr/local/include/opencv2/highgui/highgui.hpp \
- /usr/local/include/opencv2/core/core.hpp \
- /usr/local/include/opencv2/core/types_c.h /usr/include/assert.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdint.h /usr/include/stdint.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/huge_val.h \
- /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
- /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
- /usr/include/x86_64-linux-gnu/bits/inf.h \
- /usr/include/x86_64-linux-gnu/bits/nan.h \
- /usr/include/x86_64-linux-gnu/bits/mathdef.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/local/include/opencv2/core/version.hpp \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/arm-linux-gnueabihf/sys/ipc.h \
+ /usr/include/arm-linux-gnueabihf/bits/ipctypes.h \
+ /usr/include/arm-linux-gnueabihf/bits/ipc.h \
+ /usr/include/arm-linux-gnueabihf/sys/msg.h \
+ /usr/include/arm-linux-gnueabihf/bits/msq.h \
+ /usr/include/arm-linux-gnueabihf/sys/shm.h \
+ /usr/include/arm-linux-gnueabihf/bits/shm.h /usr/include/unistd.h \
+ /usr/include/arm-linux-gnueabihf/bits/posix_opt.h \
+ /usr/include/arm-linux-gnueabihf/bits/environments.h \
+ /usr/include/arm-linux-gnueabihf/bits/confname.h /usr/include/getopt.h \
+ include/analyzer.hpp /usr/include/opencv2/highgui/highgui.hpp \
+ /usr/include/opencv2/core/core.hpp /usr/include/opencv2/core/types_c.h \
+ /usr/include/assert.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/float.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdint.h \
+ /usr/include/stdint.h /usr/include/math.h \
+ /usr/include/arm-linux-gnueabihf/bits/huge_val.h \
+ /usr/include/arm-linux-gnueabihf/bits/huge_valf.h \
+ /usr/include/arm-linux-gnueabihf/bits/huge_vall.h \
+ /usr/include/arm-linux-gnueabihf/bits/inf.h \
+ /usr/include/arm-linux-gnueabihf/bits/nan.h \
+ /usr/include/arm-linux-gnueabihf/bits/mathdef.h \
+ /usr/include/arm-linux-gnueabihf/bits/mathcalls.h \
+ /usr/include/opencv2/core/version.hpp \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include-fixed/limits.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/arm-linux-gnueabihf/bits/posix1_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/local_lim.h \
  /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/posix2_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/xopen_lim.h \
  /usr/include/c++/4.8/algorithm /usr/include/c++/4.8/utility \
  /usr/include/c++/4.8/bits/stl_relops.h \
  /usr/include/c++/4.8/bits/stl_algo.h /usr/include/c++/4.8/cstdlib \
@@ -160,105 +159,103 @@ analyzer.o: src/analyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
  /usr/include/c++/4.8/bits/stl_bvector.h \
  /usr/include/c++/4.8/bits/vector.tcc \
- /usr/local/include/opencv2/core/operations.hpp \
- /usr/include/c++/4.8/limits /usr/local/include/opencv2/core/mat.hpp \
- /usr/local/include/opencv2/highgui/highgui_c.h \
- /usr/local/include/opencv2/core/core_c.h include/types.h \
- include/time_diff.h
+ /usr/include/opencv2/core/operations.hpp /usr/include/c++/4.8/limits \
+ /usr/include/opencv2/core/mat.hpp \
+ /usr/include/opencv2/highgui/highgui_c.h \
+ /usr/include/opencv2/core/core_c.h include/types.h include/time_diff.h
 types.o: src/types.c /usr/include/stdc-predef.h /usr/include/stdio.h \
- /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
- /usr/include/x86_64-linux-gnu/bits/wordsize.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/features.h /usr/include/arm-linux-gnueabihf/sys/cdefs.h \
+ /usr/include/arm-linux-gnueabihf/bits/wordsize.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs-hard.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stddef.h \
+ /usr/include/arm-linux-gnueabihf/bits/types.h \
+ /usr/include/arm-linux-gnueabihf/bits/typesizes.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h include/types.h
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdarg.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdio_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/sys_errlist.h include/types.h
 time_diff.o: src/time_diff.c /usr/include/stdc-predef.h \
  /usr/include/stdio.h /usr/include/features.h \
- /usr/include/x86_64-linux-gnu/sys/cdefs.h \
- /usr/include/x86_64-linux-gnu/bits/wordsize.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/arm-linux-gnueabihf/sys/cdefs.h \
+ /usr/include/arm-linux-gnueabihf/bits/wordsize.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs-hard.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stddef.h \
+ /usr/include/arm-linux-gnueabihf/bits/types.h \
+ /usr/include/arm-linux-gnueabihf/bits/typesizes.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
- /usr/include/x86_64-linux-gnu/sys/time.h /usr/include/time.h \
- /usr/include/x86_64-linux-gnu/bits/time.h \
- /usr/include/x86_64-linux-gnu/sys/select.h \
- /usr/include/x86_64-linux-gnu/bits/select.h \
- /usr/include/x86_64-linux-gnu/bits/sigset.h /usr/include/stdlib.h \
- /usr/include/x86_64-linux-gnu/bits/waitflags.h \
- /usr/include/x86_64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
- /usr/include/x86_64-linux-gnu/bits/endian.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap-16.h \
- /usr/include/x86_64-linux-gnu/sys/types.h \
- /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdarg.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdio_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/sys_errlist.h \
+ /usr/include/arm-linux-gnueabihf/sys/time.h /usr/include/time.h \
+ /usr/include/arm-linux-gnueabihf/bits/time.h \
+ /usr/include/arm-linux-gnueabihf/sys/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/sigset.h /usr/include/stdlib.h \
+ /usr/include/arm-linux-gnueabihf/bits/waitflags.h \
+ /usr/include/arm-linux-gnueabihf/bits/waitstatus.h /usr/include/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap-16.h \
+ /usr/include/arm-linux-gnueabihf/sys/types.h \
+ /usr/include/arm-linux-gnueabihf/sys/sysmacros.h \
+ /usr/include/arm-linux-gnueabihf/bits/pthreadtypes.h \
+ /usr/include/alloca.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdlib-float.h
 testAnalyzer.o: testAnalyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/stdio.h /usr/include/features.h \
- /usr/include/x86_64-linux-gnu/sys/cdefs.h \
- /usr/include/x86_64-linux-gnu/bits/wordsize.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs.h \
- /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stddef.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/arm-linux-gnueabihf/sys/cdefs.h \
+ /usr/include/arm-linux-gnueabihf/bits/wordsize.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs.h \
+ /usr/include/arm-linux-gnueabihf/gnu/stubs-hard.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stddef.h \
+ /usr/include/arm-linux-gnueabihf/bits/types.h \
+ /usr/include/arm-linux-gnueabihf/bits/typesizes.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/wchar.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/x86_64-linux-gnu/bits/sys_errlist.h include/analyzer.hpp \
- /usr/local/include/opencv2/highgui/highgui.hpp \
- /usr/local/include/opencv2/core/core.hpp \
- /usr/local/include/opencv2/core/types_c.h /usr/include/assert.h \
- /usr/include/stdlib.h /usr/include/x86_64-linux-gnu/bits/waitflags.h \
- /usr/include/x86_64-linux-gnu/bits/waitstatus.h /usr/include/endian.h \
- /usr/include/x86_64-linux-gnu/bits/endian.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap.h \
- /usr/include/x86_64-linux-gnu/bits/byteswap-16.h /usr/include/xlocale.h \
- /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/time.h \
- /usr/include/x86_64-linux-gnu/sys/select.h \
- /usr/include/x86_64-linux-gnu/bits/select.h \
- /usr/include/x86_64-linux-gnu/bits/sigset.h \
- /usr/include/x86_64-linux-gnu/bits/time.h \
- /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/huge_val.h \
- /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
- /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
- /usr/include/x86_64-linux-gnu/bits/inf.h \
- /usr/include/x86_64-linux-gnu/bits/nan.h \
- /usr/include/x86_64-linux-gnu/bits/mathdef.h \
- /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
- /usr/local/include/opencv2/core/version.hpp \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdarg.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdio_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/sys_errlist.h include/analyzer.hpp \
+ /usr/include/opencv2/highgui/highgui.hpp \
+ /usr/include/opencv2/core/core.hpp /usr/include/opencv2/core/types_c.h \
+ /usr/include/assert.h /usr/include/stdlib.h \
+ /usr/include/arm-linux-gnueabihf/bits/waitflags.h \
+ /usr/include/arm-linux-gnueabihf/bits/waitstatus.h /usr/include/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/endian.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap.h \
+ /usr/include/arm-linux-gnueabihf/bits/byteswap-16.h \
+ /usr/include/xlocale.h /usr/include/arm-linux-gnueabihf/sys/types.h \
+ /usr/include/time.h /usr/include/arm-linux-gnueabihf/sys/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/select.h \
+ /usr/include/arm-linux-gnueabihf/bits/sigset.h \
+ /usr/include/arm-linux-gnueabihf/bits/time.h \
+ /usr/include/arm-linux-gnueabihf/sys/sysmacros.h \
+ /usr/include/arm-linux-gnueabihf/bits/pthreadtypes.h \
+ /usr/include/alloca.h \
+ /usr/include/arm-linux-gnueabihf/bits/stdlib-float.h \
+ /usr/include/string.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/float.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include/stdint.h \
+ /usr/include/stdint.h /usr/include/arm-linux-gnueabihf/bits/wchar.h \
+ /usr/include/math.h /usr/include/arm-linux-gnueabihf/bits/huge_val.h \
+ /usr/include/arm-linux-gnueabihf/bits/huge_valf.h \
+ /usr/include/arm-linux-gnueabihf/bits/huge_vall.h \
+ /usr/include/arm-linux-gnueabihf/bits/inf.h \
+ /usr/include/arm-linux-gnueabihf/bits/nan.h \
+ /usr/include/arm-linux-gnueabihf/bits/mathdef.h \
+ /usr/include/arm-linux-gnueabihf/bits/mathcalls.h \
+ /usr/include/opencv2/core/version.hpp \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include-fixed/limits.h \
+ /usr/lib/gcc/arm-linux-gnueabihf/4.8/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/arm-linux-gnueabihf/bits/posix1_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/local_lim.h \
  /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/posix2_lim.h \
+ /usr/include/arm-linux-gnueabihf/bits/xopen_lim.h \
  /usr/include/c++/4.8/algorithm /usr/include/c++/4.8/utility \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/cpu_defines.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++config.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/os_defines.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/cpu_defines.h \
  /usr/include/c++/4.8/bits/stl_relops.h \
  /usr/include/c++/4.8/bits/stl_pair.h /usr/include/c++/4.8/bits/move.h \
  /usr/include/c++/4.8/bits/concept_check.h \
@@ -281,7 +278,7 @@ testAnalyzer.o: testAnalyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/atomic_lockfree_defines.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/allocator.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++allocator.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++allocator.h \
  /usr/include/c++/4.8/ext/new_allocator.h \
  /usr/include/c++/4.8/bits/memoryfwd.h /usr/include/c++/4.8/cmath \
  /usr/include/c++/4.8/cstddef /usr/include/c++/4.8/complex \
@@ -291,18 +288,19 @@ testAnalyzer.o: testAnalyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/postypes.h /usr/include/c++/4.8/cwchar \
  /usr/include/c++/4.8/bits/char_traits.h \
  /usr/include/c++/4.8/bits/localefwd.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++locale.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/c++locale.h \
  /usr/include/c++/4.8/clocale /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h /usr/include/c++/4.8/cctype \
- /usr/include/ctype.h /usr/include/c++/4.8/bits/ios_base.h \
+ /usr/include/arm-linux-gnueabihf/bits/locale.h \
+ /usr/include/c++/4.8/cctype /usr/include/ctype.h \
+ /usr/include/c++/4.8/bits/ios_base.h \
  /usr/include/c++/4.8/ext/atomicity.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/gthr-default.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/gthr.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/gthr-default.h \
  /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/x86_64-linux-gnu/bits/sched.h \
- /usr/include/x86_64-linux-gnu/bits/timex.h \
- /usr/include/x86_64-linux-gnu/bits/setjmp.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/atomic_word.h \
+ /usr/include/arm-linux-gnueabihf/bits/sched.h \
+ /usr/include/arm-linux-gnueabihf/bits/timex.h \
+ /usr/include/arm-linux-gnueabihf/bits/setjmp.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/atomic_word.h \
  /usr/include/c++/4.8/bits/locale_classes.h /usr/include/c++/4.8/string \
  /usr/include/c++/4.8/bits/ostream_insert.h \
  /usr/include/c++/4.8/bits/cxxabi_forced.h \
@@ -316,9 +314,9 @@ testAnalyzer.o: testAnalyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/basic_ios.h \
  /usr/include/c++/4.8/bits/locale_facets.h /usr/include/c++/4.8/cwctype \
  /usr/include/wctype.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_base.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/ctype_base.h \
  /usr/include/c++/4.8/bits/streambuf_iterator.h \
- /usr/include/x86_64-linux-gnu/c++/4.8/bits/ctype_inline.h \
+ /usr/include/arm-linux-gnueabihf/c++/4.8/bits/ctype_inline.h \
  /usr/include/c++/4.8/bits/locale_facets.tcc \
  /usr/include/c++/4.8/bits/basic_ios.tcc /usr/include/c++/4.8/ostream \
  /usr/include/c++/4.8/bits/ostream.tcc \
@@ -330,8 +328,7 @@ testAnalyzer.o: testAnalyzer.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
  /usr/include/c++/4.8/bits/stl_bvector.h \
  /usr/include/c++/4.8/bits/vector.tcc \
- /usr/local/include/opencv2/core/operations.hpp \
- /usr/include/c++/4.8/limits /usr/local/include/opencv2/core/mat.hpp \
- /usr/local/include/opencv2/highgui/highgui_c.h \
- /usr/local/include/opencv2/core/core_c.h include/types.h \
- include/time_diff.h
+ /usr/include/opencv2/core/operations.hpp /usr/include/c++/4.8/limits \
+ /usr/include/opencv2/core/mat.hpp \
+ /usr/include/opencv2/highgui/highgui_c.h \
+ /usr/include/opencv2/core/core_c.h include/types.h include/time_diff.h

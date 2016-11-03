@@ -31,6 +31,7 @@ typedef struct {
 	long msgtype;
 	int width, height;
 	unsigned char mData[CAMERA_WIDTH * CAMERA_HEIGHT];
+    int junk;
 } STEREO_IN;
 
 // DRONE_* will not be used if analyzer & data handler are located in the same thread.

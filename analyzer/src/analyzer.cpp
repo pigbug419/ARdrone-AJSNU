@@ -34,11 +34,13 @@ Analyzer::Analyzer()
 bool Analyzer::Initialize()
 {
 	bool flag = true;
-	drone_key = msgget(drone_key, IPC_CREAT | 0666);
+	/*
+    drone_key = msgget(drone_key, IPC_CREAT | 0666);
 	if(drone_key == -1) {
 		CPDBG("Fail to create a message queue - drone key\n");
 		flag = false;
 	}
+    */
 	if(stereo_source == MESSAGE_STREAM)
 	{
 		stereo_key = msgget(stereo_key, IPC_CREAT | 0666);
@@ -46,6 +48,7 @@ bool Analyzer::Initialize()
 			CPDBG("Fail to create a message queue - stereo key\n");
 			flag = false;
 		}
+        CPDBG("stereo_key is set\n");
 	}
 	else
 	{
@@ -273,7 +276,7 @@ bool Analyzer::Test()
 		CPDBG("Command : ");
 		print_cmd(cmd);
 		imshow("stereo",stereo_data);
-		char ch = waitKey();
+		char ch = waitKey(10);
 		if(ch == 'q'){
 			Land();
 			return false;
@@ -366,9 +369,9 @@ bool Analyzer::ReceiveStereo()
 	{
 		case MESSAGE_STREAM:
 			msg_size = sizeof(msg) - sizeof(msg.msgtype);
-
-			nbytes = msgrcv(stereo_key, &msg, msg_size, STEREO_KEY, 0);
-			if(nbytes < 0)
+            msg.msgtype = STEREO_KEY;
+			nbytes = msgrcv(stereo_key, (void *)&msg, msg_size, STEREO_KEY, 0);
+			if(nbytes == -1)
 			{
 				CPDBG("Fail to receive Stereo data\n");
 				return false;
@@ -611,9 +614,9 @@ bool Analyzer::CenterBlocked()
 {
 	int mid = PARR_LENGTH/2;
 	int bias = 0;
-	if(state == SIDLE) bias = 15;
-	if(state == LOOKASIDE) bias = 20;
-	unsigned char basis = 50;
+	if(state == SIDLE) bias = 0;
+	if(state == LOOKASIDE) bias = 0;
+	unsigned char basis = 20;
 	int i,j;
 	int cnt = 0;
 	for(i=mid-1;i<=mid+1;i++)
