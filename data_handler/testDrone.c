@@ -88,16 +88,16 @@ void *nav_send_sm(){
 		return (NULL);
 	}
 
-	for(;;i++)
+	for(;;)
 	{
-		if(i>100000) i=0;
+		
 
 		DRONE_IN msg;
 		navdata_t navdata;
 		update_navdata(drone);
 		navdata = get_navdata(drone);
 		//		navdata.navdata_option.altitude = i;
-
+		//print_navdata(navdata);
 		//make msg
 		msg.msgtype = DRONE_KEY;
 		msg.nav.vx = navdata.navdata_option.vx;
@@ -111,7 +111,8 @@ void *nav_send_sm(){
 		//		msg.nav.is_flying = true;
 
 		int msg_size = sizeof(msg);
-		memcpy(shmsg, &msg, msg_size);	
+		memcpy(shmsg, &msg, msg_size);
+		usleep(20000);
 	}
 
 }
@@ -128,10 +129,11 @@ void *nav_send(){
 		//	if(cmd==8) return (NULL);
 		//	pthread_mutex_lock(&mutex);
 
-		update_navdata_for_test(drone);
+		//		update_navdata(drone);
 
 		navdata_t navdata;
-		navdata = get_navdata(drone);
+		//		navdata = get_navdata(drone);
+		navdata.navdata_option.altitude = i;
 
 		DRONE_IN msg;
 		int msg_size = 0;
@@ -164,13 +166,13 @@ void *nav_send(){
 void *control_receive(){
 	for(;;)
 	{
-		//	printf("it is control_receive\n");
+		printf("it is control_receive\n");
 		DRONE_OUT msg;
 		ssize_t nbytes;
 		int msg_size = sizeof(msg)-sizeof(msg.msgtype);
-		//	printf("2\n");
+		printf("2\n");
 		nbytes = msgrcv(drone_key, &msg, msg_size, 1, 0);
-		//	printf("after receive\n");
+		printf("after receive\n");
 		if(nbytes<0)
 		{
 			printf("Fail to receive Control data!!!@@@\n");
@@ -197,25 +199,27 @@ void *control_receive(){
 				spin_drone(drone, -0.4f);
 				break;
 			case MOVEF:
-				translate_drone(drone, 0.2f, 0.0f);
+				translate_drone(drone, -0.05f, 0.0f);
 				break;
 			case MOVER:
-				translate_drone(drone, 0.0f, 0.2f);
+				translate_drone(drone, 0.0f, 0.1f);
 				break;
 			case MOVEL:
-				translate_drone(drone, 0.0f, -0.2f);
+				translate_drone(drone, 0.0f, -0.1f);
 				break;
 			case MOVEB:
-				translate_drone(drone, -0.2f, 0.0f);
+				translate_drone(drone, 0.2f, 0.0f);
 			case MOVEU:
-				lift_drone(drone,0.2f);
+				lift_drone(drone,0.4f);
 				break;				
 			case STOP:
-				return NULL;
+				return;
 				break;
 		}
+		//usleep(50000);
+		//hovering_drone(drone);
+		CPDBG("touch\n");
 	}
-	return NULL;
 }
 
 int main(int argc, char *argv[]) {

@@ -29,6 +29,7 @@ enum DRONE_COMMAND {
 
 typedef struct {
 	long msgtype;
+	int width, height;
 	unsigned char mData[CAMERA_WIDTH * CAMERA_HEIGHT];
 } STEREO_IN;
 

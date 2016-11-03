@@ -373,7 +373,8 @@ bool Analyzer::ReceiveStereo()
 				CPDBG("Fail to receive Stereo data\n");
 				return false;
 			}
-			stereo_data = Mat(Size(CAMERA_WIDTH, CAMERA_HEIGHT), CV_8UC1, msg.mData);
+
+			stereo_data = Mat(Size(msg.width, msg.height), CV_8UC1, msg.mData);
 			break;
 		case VIDEO_STREAM:
 			usleep(1000*COMMAND_INTERVAL/3);
@@ -585,10 +586,10 @@ void Analyzer::ProcessStereo()
 		for(j = 0 ; j < PARR_LENGTH; j++)
 		{
 			// process processed_data[i][j]!
-			int xleftmost = (CAMERA_WIDTH*i)/PARR_LENGTH;
-			int xrightmost = (CAMERA_WIDTH*(i+1))/PARR_LENGTH;
-			int yleftmost = (CAMERA_HEIGHT*j)/PARR_LENGTH;
-			int yrightmost = (CAMERA_HEIGHT*(j+1))/PARR_LENGTH;
+			int xleftmost = (stereo_data.cols*i)/PARR_LENGTH;
+			int xrightmost = (stereo_data.cols*(i+1))/PARR_LENGTH;
+			int yleftmost = (stereo_data.rows*j)/PARR_LENGTH;
+			int yrightmost = (stereo_data.rows*(j+1))/PARR_LENGTH;
 			unsigned char temp = 0;
 			unsigned char maxval = 0x0;
 			int x,y;
