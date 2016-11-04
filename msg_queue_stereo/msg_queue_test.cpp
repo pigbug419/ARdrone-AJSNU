@@ -33,7 +33,6 @@ int main()
         printf("Don't create msg\n");
         return -1;
     }
-    printf("Stereo key: %d\n", key_id);
     while(1)
     {
         if (msgrcv( key_id, (void *)&mbuf, sizeof(MSG_BUF), KEY_ID, 0) == -1)
