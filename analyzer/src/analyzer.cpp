@@ -34,13 +34,13 @@ Analyzer::Analyzer()
 bool Analyzer::Initialize()
 {
 	bool flag = true;
-	/*
+	
     drone_key = msgget(drone_key, IPC_CREAT | 0666);
 	if(drone_key == -1) {
 		CPDBG("Fail to create a message queue - drone key\n");
 		flag = false;
 	}
-    */
+    
 	if(stereo_source == MESSAGE_STREAM)
 	{
 		stereo_key = msgget(stereo_key, IPC_CREAT | 0666);
@@ -99,7 +99,7 @@ void Analyzer::Prepare()
 		}
 		else
 		{
-			if(nav_data.altitude < 1000){
+			if(nav_data.altitude <800){
 				if(realtest){
 					CPDBG("now altitude: %d... lift.... enter key\n", nav_data.altitude);
 					getchar();
@@ -276,7 +276,9 @@ bool Analyzer::Test()
 		CPDBG("Command : ");
 		print_cmd(cmd);
 		imshow("stereo",stereo_data);
-		char ch = waitKey(10);
+        int waittime = 10;
+        if(realtest) waittime = 10000;
+		char ch = waitKey(waittime);
 		if(ch == 'q'){
 			Land();
 			return false;

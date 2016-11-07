@@ -199,7 +199,7 @@ void *control_receive(){
 				spin_drone(drone, -0.4f);
 				break;
 			case MOVEF:
-				translate_drone(drone, -0.05f, 0.0f);
+				translate_drone(drone, -0.1f, 0.0f);
 				break;
 			case MOVER:
 				translate_drone(drone, 0.0f, 0.1f);
@@ -208,9 +208,9 @@ void *control_receive(){
 				translate_drone(drone, 0.0f, -0.1f);
 				break;
 			case MOVEB:
-				translate_drone(drone, 0.2f, 0.0f);
+				translate_drone(drone, 0.1f, 0.0f);
 			case MOVEU:
-				lift_drone(drone,0.4f);
+				lift_drone(drone,1.0f);
 				break;				
 			case STOP:
 				return;
