@@ -1,6 +1,6 @@
 CC = g++
 INC = -I./include
-CFLAGS = -g -c `pkg-config --cflags opencv`
+CFLAGS = -g -c `pkg-config --libs opencv`
 LIBS = `pkg-config --libs opencv`
 SRCS = src/analyzer.cpp src/types.c src/time_diff.c testAnalyzer.cpp
 OBJS = src/analyzer.o src/types.o src/time_diff.o testAnalyzer.o 
