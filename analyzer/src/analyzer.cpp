@@ -604,6 +604,7 @@ void Analyzer::ProcessStereo()
 				{
 					// should be more complex because of the noise
 					temp = *(stereo_data.ptr<unsigned char>(y,x));
+                    temp = temp>=150?0:temp; /// minimize noise.....
 					if(temp>maxval) maxval = temp;
 				}
 			}
