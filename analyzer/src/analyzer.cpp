@@ -586,6 +586,9 @@ void Analyzer::ProcessNoise()
 void Analyzer::ProcessStereo()
 {
 	int i, j;
+	int total_pix = stereo_data.cols*stereo_data.rows/PARR_LENGTH/PARR_LENGTH;
+	int limit = 150;
+	float noise_limit = 0.7f;
 	for(i = 0; i < PARR_LENGTH ; i++)
 	{
 		for(j = 0 ; j < PARR_LENGTH; j++)
@@ -598,17 +601,23 @@ void Analyzer::ProcessStereo()
 			unsigned char temp = 0;
 			unsigned char maxval = 0x0;
 			int x,y;
+			int flag = 0;
 			for(x = xleftmost ; x<xrightmost ; x++)
 			{
 				for(y = yleftmost ; y<yrightmost ; y++)
 				{
 					// should be more complex because of the noise
 					temp = *(stereo_data.ptr<unsigned char>(y,x));
-                    temp = temp>=150?0:temp; /// minimize noise.....
+					if(temp>=limit){
+						flag++;
+						temp = 0;
+					}
+//                    temp = temp>=limit?0:temp; /// minimize noise.....
 					if(temp>maxval) maxval = temp;
 				}
 			}
-			processed_data[i][j]=maxval;
+			float noise = (float)flag / (float) total_pix;
+			processed_data[i][j] = noise>=noise_limit? 0:maxval;
 		}
 	}
 }
