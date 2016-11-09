@@ -193,10 +193,10 @@ void *control_receive(){
 				hovering_drone(drone);
 				break;
 			case SPINR:	
-				spin_drone(drone, 0.4f);
+				spin_drone(drone, 0.2f);
 				break;
 			case SPINL:
-				spin_drone(drone, -0.4f);
+				spin_drone(drone, -0.2f);
 				break;
 			case MOVEF:
 				translate_drone(drone, -0.1f, 0.0f);
@@ -210,7 +210,7 @@ void *control_receive(){
 			case MOVEB:
 				translate_drone(drone, 0.1f, 0.0f);
 			case MOVEU:
-				lift_drone(drone,1.0f);
+				lift_drone(drone,0.5f);
 				break;				
 			case STOP:
 				return;

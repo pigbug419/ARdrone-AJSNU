@@ -185,7 +185,7 @@ bool Analyzer::Run()
 			cmd = STOP;
 			break;
 	}
-	if(mode_changed || 0.9*COMMAND_INTERVAL < diff_timeval(cmd_timer))
+	if(mode_changed || 0.95*COMMAND_INTERVAL < diff_timeval(cmd_timer))
 	{
 		if(state == SIDLE)
 		{
@@ -197,6 +197,14 @@ bool Analyzer::Run()
 			if(cmd == MOVEL) move_cnt--;
 			if(cmd == MOVER) move_cnt++;
 		}
+		CPDBG("Command : ");
+		print_cmd(cmd);
+		imshow("stereo",stereo_data);
+        char ch = waitKey(20);
+        if(ch == 'q'){
+            Land();
+            return false;
+        }
 		SendCommand(cmd);
 		init_timeval(&cmd_timer);
 	}
@@ -586,9 +594,9 @@ void Analyzer::ProcessNoise()
 void Analyzer::ProcessStereo()
 {
 	int i, j;
-	int total_pix = stereo_data.cols*stereo_data.rows/PARR_LENGTH/PARR_LENGTH;
-	int limit = 150;
-	float noise_limit = 0.7f;
+	int total_pix = (stereo_data.cols*stereo_data.rows)/(PARR_LENGTH*PARR_LENGTH);
+	int limit = 70;
+	float valuable_limit = 0.5f;
 	for(i = 0; i < PARR_LENGTH ; i++)
 	{
 		for(j = 0 ; j < PARR_LENGTH; j++)
@@ -608,16 +616,15 @@ void Analyzer::ProcessStereo()
 				{
 					// should be more complex because of the noise
 					temp = *(stereo_data.ptr<unsigned char>(y,x));
-					if(temp>=limit){
+					if(temp<limit && temp > 0){
 						flag++;
-						temp = 0;
+					    if(temp>maxval) maxval = temp;
 					}
 //                    temp = temp>=limit?0:temp; /// minimize noise.....
-					if(temp>maxval) maxval = temp;
 				}
 			}
-			float noise = (float)flag / (float) total_pix;
-			processed_data[i][j] = noise>=noise_limit? 0:maxval;
+			float valuable = (float)flag / (float) total_pix;
+			processed_data[i][j] = valuable>=valuable_limit? maxval:0;
 		}
 	}
 }
@@ -628,23 +635,23 @@ bool Analyzer::CenterBlocked()
 	int bias = 0;
 	if(state == SIDLE) bias = 0;
 	if(state == LOOKASIDE) bias = 0;
-	unsigned char basis = 20;
+	unsigned char basis = 15;
 	int i,j;
 	int cnt = 0;
 	for(i=mid-1;i<=mid+1;i++)
 		for(j=mid-1;j<=mid+1;j++)
 			if(processed_data[j][i] > basis-bias){
-				if(i==mid) cnt+=1;
-				if(j==mid) cnt+=1;
+				//if(i==mid) cnt+=1;
+				//if(j==mid) cnt+=1;
 				cnt++;
 			}
-	return cnt>=4;
+	return cnt>=1;
 }
 
 int Analyzer::LeftDepth()
 {
 	int mid = PARR_LENGTH/2;
-	unsigned char basis = 20;
+	unsigned char basis = 15;
 	int depcnt = 0;
 	int cnt = 0;
 	int i,j;
@@ -662,7 +669,7 @@ int Analyzer::LeftDepth()
 int Analyzer::RightDepth()
 {
 	int mid = PARR_LENGTH/2;
-	unsigned char basis = 20;
+	unsigned char basis = 15;
 	int depcnt = 0;
 	int cnt = 0;
 	int i,j;

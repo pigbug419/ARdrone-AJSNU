@@ -1,10 +1,14 @@
 testAnalyzer:
 
-./testAnalyzer "Example avi name" "With drone - true else remain blank"
+./testAnalyzer "With drone? / run : real running " "runtime(for real running)"
 
 Ex)
 test with drone flying (w/datahandler)
-./testAnalyzer Examples/2.avi true 
+./testAnalyzer true 
 
 test with text
-./testAnalyzer Examples/2.avi
+./testAnalyzer
+
+real run (10 commands / sec)
+
+./testAnalyzer run 10
